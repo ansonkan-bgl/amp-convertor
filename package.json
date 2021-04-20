@@ -1,0 +1,9 @@
+{
+  "dependencies": {
+    "axios": "^0.21.1",
+    "serve": "^11.3.2"
+  },
+  "devDependencies": {
+    "purgecss": "^4.0.3"
+  }
+}
