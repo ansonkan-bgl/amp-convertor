@@ -12,6 +12,26 @@ async function main() {
   // original HTML source
   let html = fs.readFileSync(inputPath, { encoding: 'utf8', flag: 'r' });
 
+  // START - find out the nav links and test display
+  // since the workaround.html is for the nav overlay, and there might be change in nav links in different locale or translation, this part might helps
+  const navInfo = []
+  const nav = html.match(/<nav\srole=.navigation.\sclass=.nav-menu-v1 w-nav-menu.>([\s\S]*?)<div\sclass=.nav-menu-small"><\/div><\/nav>/gm)
+  if (nav && nav[0]) {
+    console.log(nav[0])
+    const navLinks = nav[0].match(/<a\shref=(.+?)\sclass=.nav-link w-inline-block.><div(\sclass=.text-block-2.)*?>(.*?)<\/div><\/a>/g)
+    console.log(navLinks)
+    for (const link of navLinks) {
+      const match = link.match(/<a\shref=(.+?)\sclass=.nav-link w-inline-block.><div(\sclass=.text-block-2.)*?>(.*?)<\/div><\/a>/)
+      console.log(match)
+      if (match) {
+        navInfo.push([match[1], match[3]])
+      }
+    }
+  }
+
+  console.log(navInfo)
+  // END - find out the nav links and test display
+
   // common amp-boilerplate and google font links
   const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
 
