@@ -2,45 +2,24 @@ const fs = require('fs')
 const { PurgeCSS } = require('purgecss')
 const axios = require('axios');
 
-async function main() {
-  const inputPath = './blog-home.html'
-  const outputPath = './build/amp/blog-home.amp.html'
-  const headPath = './common-head.html'
-  const workaroundHTMLPath = './workaround.html'
-  const workaroundCSSPath = './workaround.css'
-
-  // original HTML source
-  let html = fs.readFileSync(inputPath, { encoding: 'utf8', flag: 'r' });
-
-  // START - find out the nav links and test display
+function getNavInfo (html) {
   // since the workaround.html is for the nav overlay, and there might be change in nav links in different locale or translation, this part might helps
   const navInfo = []
   const nav = html.match(/<nav\srole=.navigation.\sclass=.nav-menu-v1 w-nav-menu.>([\s\S]*?)<div\sclass=.nav-menu-small"><\/div><\/nav>/gm)
   if (nav && nav[0]) {
-    console.log(nav[0])
     const navLinks = nav[0].match(/<a\shref=(.+?)\sclass=.nav-link w-inline-block.><div(\sclass=.text-block-2.)*?>(.*?)<\/div><\/a>/g)
-    console.log(navLinks)
     for (const link of navLinks) {
       const match = link.match(/<a\shref=(.+?)\sclass=.nav-link w-inline-block.><div(\sclass=.text-block-2.)*?>(.*?)<\/div><\/a>/)
-      console.log(match)
       if (match) {
         navInfo.push([match[1], match[3]])
       }
     }
   }
 
-  console.log(navInfo)
-  // END - find out the nav links and test display
+  return navInfo
+}
 
-  // common amp-boilerplate and google font links
-  const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
-
-  // since the original NAV button in mobile view is controlled by js, this is a css version of that
-  const workaroundHTML = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
-  const workaroundCSS = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
-  html = html.replace(/(class=.button.subscribe-button.w-button.>[\s\S]*?<\/a><\/div>[\s\S]*?)<div.class="menu-button w-nav-button">[\s\S]*?<div class="menu-icon">[\s\S]*?<div class="menu-line-top"><\/div>[\s\S]*?<div class="menu-line-middle"><\/div>[\s\S]*?<div class="menu-line-bottom"><\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>/g, `$1${workaroundHTML}`)
-
-  // START - collect all external/internal CSS, merge them then purge unused css
+async function getAmpCSS (html, additionalCSS) {
   const rawCSS = []
   const cssLinks = html.match(/<link\s*href="(.+)"\s*rel="stylesheet"\s*type="text\/css"\s*\/>/g);
   if (cssLinks) {
@@ -60,7 +39,7 @@ async function main() {
 
   const cssList = [
     ...(purgedResult ? purgedResult.map(x => x.css) : []),
-    workaroundCSS
+    additionalCSS
   ]
 
   const styleBlocks = html.match(/<style>([\s\S]*?)<\/style>/g)
@@ -70,11 +49,33 @@ async function main() {
     }
   }
 
-  const ampCSS = cssList
+  return cssList
     .join(' ')
     .replace(/\s\s+/g, ' ')
     .replace(/!important/g, '')
-  // END - collect all external/internal CSS, merge them then purge unused css
+}
+
+async function main() {
+  const inputPath = './blog-post.html'
+  const outputPath = './build/amp/blog-post.amp.html'
+  const headPath = './common-head.html'
+  const workaroundHTMLPath = './workaround.html'
+  const workaroundCSSPath = './workaround.css'
+
+  // original HTML source
+  let html = fs.readFileSync(inputPath, { encoding: 'utf8', flag: 'r' });
+
+  const navInfo = getNavInfo(html)
+
+  // common amp-boilerplate and google font links
+  const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
+
+  // since the original NAV button in mobile view is controlled by js, this is a css version of that
+  const workaroundHTML = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
+  const workaroundCSS = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
+  html = html.replace(/(class=.button.subscribe-button.w-button.>[\s\S]*?<\/a><\/div>[\s\S]*?)<div.class="menu-button w-nav-button">[\s\S]*?<div class="menu-icon">[\s\S]*?<div class="menu-line-top"><\/div>[\s\S]*?<div class="menu-line-middle"><\/div>[\s\S]*?<div class="menu-line-bottom"><\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>/g, `$1${workaroundHTML}`)
+
+  const ampCSS = await getAmpCSS(html, workaroundCSS)
 
   html = html.replace(/<html/g, '<html ⚡ ')
   html = html.replace(/<script[\s\S]*?<\/script>/gm, '')
