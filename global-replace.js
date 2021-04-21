@@ -11,7 +11,7 @@ function getNavInfo (html) {
     for (const link of navLinks) {
       const match = link.match(/<a\shref=(.+?)\sclass=.nav-link w-inline-block.><div(\sclass=.text-block-2.)*?>(.*?)<\/div><\/a>/)
       if (match) {
-        navInfo.push([match[1], match[3]])
+        navInfo.push([match[1].replace(/['|"]/g, ''), match[3]])
       }
     }
   }
@@ -61,6 +61,7 @@ async function main() {
   const headPath = './common-head.html'
   const workaroundHTMLPath = './workaround.html'
   const workaroundCSSPath = './workaround.css'
+  const navLinkPath = './nav-link.html'
 
   // original HTML source
   let html = fs.readFileSync(inputPath, { encoding: 'utf8', flag: 'r' });
@@ -71,8 +72,17 @@ async function main() {
   const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
 
   // since the original NAV button in mobile view is controlled by js, this is a css version of that
-  const workaroundHTML = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
   const workaroundCSS = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
+  let workaroundHTML = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
+  let navLink = fs.readFileSync(navLinkPath, { encoding: 'utf8', flag: 'r' });
+  if (navInfo) {
+    const navLinksHTML = []
+    for (const info of navInfo) {
+      const [href, text] = info
+      navLinksHTML.push(navLink.replace('{{href}}', href).replace('{{text}}', text))
+    }
+    workaroundHTML = workaroundHTML.replace('{{nav-links}}', navLinksHTML.join(''))
+  }
   html = html.replace(/(class=.button.subscribe-button.w-button.>[\s\S]*?<\/a><\/div>[\s\S]*?)<div.class="menu-button w-nav-button">[\s\S]*?<div class="menu-icon">[\s\S]*?<div class="menu-line-top"><\/div>[\s\S]*?<div class="menu-line-middle"><\/div>[\s\S]*?<div class="menu-line-bottom"><\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>/g, `$1${workaroundHTML}`)
 
   const ampCSS = await getAmpCSS(html, workaroundCSS)
