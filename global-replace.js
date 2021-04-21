@@ -3,8 +3,8 @@ const { PurgeCSS } = require('purgecss')
 const axios = require('axios');
 
 async function main() {
-  const inputPath = './blog-categories.html'
-  const outputPath = './build/amp/blog-categories.amp.html'
+  const inputPath = './blog-home.html'
+  const outputPath = './build/amp/blog-home.amp.html'
   const headPath = './common-head.html'
   const workaroundHTMLPath = './workaround.html'
   const workaroundCSSPath = './workaround.css'
@@ -16,9 +16,9 @@ async function main() {
   const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
 
   // since the original NAV button in mobile view is controlled by js, this is a css version of that
-  const navWorkaroundHTML = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
-  const navWorkaroundCSS = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
-  html = html.replace(/(class=.button.subscribe-button.w-button.>[\s\S]*?<\/a><\/div>[\s\S]*?)<div.class="menu-button w-nav-button">[\s\S]*?<div class="menu-icon">[\s\S]*?<div class="menu-line-top"><\/div>[\s\S]*?<div class="menu-line-middle"><\/div>[\s\S]*?<div class="menu-line-bottom"><\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>/g, `$1${navWorkaroundHTML}`)
+  const workaroundHTML = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
+  const workaroundCSS = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
+  html = html.replace(/(class=.button.subscribe-button.w-button.>[\s\S]*?<\/a><\/div>[\s\S]*?)<div.class="menu-button w-nav-button">[\s\S]*?<div class="menu-icon">[\s\S]*?<div class="menu-line-top"><\/div>[\s\S]*?<div class="menu-line-middle"><\/div>[\s\S]*?<div class="menu-line-bottom"><\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>[\s\S]*?<\/div>/g, `$1${workaroundHTML}`)
 
   // START - collect all external/internal CSS, merge them then purge unused css
   const rawCSS = []
@@ -40,7 +40,7 @@ async function main() {
 
   const cssList = [
     ...(purgedResult ? purgedResult.map(x => x.css) : []),
-    navWorkaroundCSS
+    workaroundCSS
   ]
 
   const styleBlocks = html.match(/<style>([\s\S]*?)<\/style>/g)
@@ -70,8 +70,6 @@ async function main() {
   html = html.replace(/(class="button-icon.*?".*?)\/>/g, '$1 height="18" width="18"></amp-img>')
   html = html.replace(/(instagram-photo-link[\s\S]*?w-inline-block.><)img([\s\S]*?)\/>/g, '$1amp-img$2 width="50" height="50" heights="(min-width:500px) 100%, 100%"></amp-img>')
   
-  html = html.replace(/<img/g, '<amp-img')
-
   html = html.replace(/(class=.mini-icon-grey.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
   html = html.replace(/(class=.nav-logo.*?)\/>/g, '$1 height="28"></amp-img>')
   html = html.replace(/(class=.footer-v1-logo.*?)\/>/g, '$1 height="43" width="213.02"></amp-img>')
@@ -83,6 +81,8 @@ async function main() {
   html = html.replace(/(x.svg.[\s\S]*?alt=.*?)\/>/g, '$1 height="12" width="12"></amp-img>')
   html = html.replace(/(class=.nav-arrow.*?)\/>/g, '$1 height="16" width="16"></amp-img>')
 
+  html = html.replace(/<img/g, '<amp-img')
+  
   // have not found the regex bug yet, but something is causing the replace for .mini-icon-grey adding height and width into a link, so this will remove them
   html = html.replace(/(<link.rel=.prerender[\s\S]*?.)height[\s\S]*?width[\s\S]*?(>)/g, '$1$2')
 
