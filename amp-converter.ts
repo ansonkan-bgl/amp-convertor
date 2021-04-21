@@ -1,6 +1,7 @@
 import fs from 'fs';
 import { PurgeCSS } from 'purgecss';
 import axios from 'axios';
+const minify = require('html-minifier').minify;
 
 function getNavInfo(html: string): Array<Array<string>> {
   // since the workaround.html is for the nav overlay, and there might be change in nav links in different locale or translation, this part might helps
@@ -148,6 +149,13 @@ async function main(url: string, username: string, password: string, outputPath:
   html = html.replace(/(<link.rel=.prerender[\s\S]*?.)height[\s\S]*?width[\s\S]*?(>)/g, '$1$2')
 
   html = html.replace(/<\/head>/, `<style amp-custom>${ampCSS}</style>${ampHead}</head>`)
+
+  html = minify(html, {
+    minifyCSS: true,
+    minifyJS: true,
+    removeComments: true,
+    collapseInlineTagWhitespace: true
+  })
 
   if (outputPath) {
     try {
