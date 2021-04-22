@@ -1,9 +1,16 @@
 import fs from 'fs';
+import path from 'path';
 import axios from 'axios';
 import cheerio from 'cheerio';
 import htmlMinify from 'html-minifier';
 
-function getAllAttributes (node: any): Array<any> {
+const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
+let workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open="">{{nav-links}}</nav>'
+const navLink = '<a href="{{href}}" class="nav-link w-inline-block"><div>{{text}}</div></a>'
+
+const commonCSSPath: string = './common.min.css'
+
+function getAllAttributes(node: any): Array<any> {
   return node.attributes || Object.keys(node.attribs).map(
     name => ({ name, value: node.attribs[name] })
   );
@@ -13,8 +20,6 @@ async function main(url: string, username: string, password: string, outputPath:
   if (!url) {
     throw new Error('URL is missing...')
   }
-
-  const commonCSSPath: string = './common.min.css'
 
   // original HTML source
   let html: string = ''
@@ -42,11 +47,9 @@ async function main(url: string, username: string, password: string, outputPath:
   })
 
   // common amp-boilerplate and google font links
-  const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
+
 
   // since the original NAV button in mobile view is controlled by js, this is a css version of that
-  let workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open="">{{nav-links}}</nav>'
-  const navLink = '<a href="{{href}}" class="nav-link w-inline-block"><div>{{text}}</div></a>'
   if (navInfo) {
     const navLinksHTML = []
     for (const info of navInfo) {
@@ -62,7 +65,7 @@ async function main(url: string, username: string, password: string, outputPath:
 
   let ampCSS: string = ''
   try {
-    const commonCSS: string = fs.readFileSync(commonCSSPath, { encoding: 'utf8', flag: 'r' });
+    const commonCSS: string = fs.readFileSync(path.join(__dirname, commonCSSPath), { encoding: 'utf8', flag: 'r' });
     ampCSS = commonCSS
   } catch (error) {
     console.log('--------------------')
@@ -86,7 +89,7 @@ async function main(url: string, username: string, password: string, outputPath:
     }
   })
 
-  function converToAmpImg (query: string, width: number, height: number, heights?: string) {
+  function converToAmpImg(query: string, width: number, height: number, heights?: string) {
     const root = $(query)
     if (!root) return
 
