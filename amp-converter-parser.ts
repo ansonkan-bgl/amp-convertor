@@ -14,13 +14,9 @@ async function main(url: string, username: string, password: string, outputPath:
     throw new Error('URL is missing...')
   }
 
-  // const headPath: string = './common-head.html'
-  const workaroundHTMLPath: string = './workaround.html'
   const commonCSSPath: string = './common.min.css'
-  // const navLinkPath: string = './nav-link.html'
 
   // original HTML source
-  // let html = fs.readFileSync(inputPath, { encoding: 'utf8', flag: 'r' });
   let html: string = ''
   try {
     const pageResult = await axios.get(url, {
