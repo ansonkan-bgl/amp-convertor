@@ -16,6 +16,23 @@ function getAllAttributes(node: any): Array<any> {
   );
 }
 
+function converToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string) {
+  const cheerio = $(query)
+  if (!cheerio) return
+
+  const nodes = cheerio.toArray()
+  if (!nodes || nodes.length === 0) return
+
+  const ampImg = $(`<amp-img height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
+
+  nodes.forEach(n => {
+    const attributes = getAllAttributes(n)
+    const ampImgClone = ampImg.clone()
+    attributes.forEach(attr => ampImgClone.attr(attr.name, attr.value))
+    $(n).replaceWith(ampImgClone)
+  })
+}
+
 async function main(url: string, username: string, password: string, outputPath: string): Promise<string> {
   if (!url) {
     throw new Error('URL is missing...')
@@ -90,38 +107,21 @@ async function main(url: string, username: string, password: string, outputPath:
     }
   })
 
-  function converToAmpImg(query: string, width: number, height: number, heights?: string) {
-    const root = $(query)
-    if (!root) return
-
-    const nodes = root.toArray()
-    if (!nodes || nodes.length === 0) return
-
-    const ampImg = $(`<amp-img height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
-
-    nodes.forEach(n => {
-      const attributes = getAllAttributes(n)
-      const ampImgClone = ampImg.clone()
-      attributes.forEach(attr => ampImgClone.attr(attr.name, attr.value))
-      $(n).replaceWith(ampImgClone)
-    })
-  }
-
-  converToAmpImg('.connect-icon img', 18, 18)
-  converToAmpImg('.mini-icon-grey', 14, 14)
-  converToAmpImg('.banner-sidebar.w-inline-block img', 300, 400)
-  converToAmpImg('.social-icon.w-inline-block img', 18, 18)
-  converToAmpImg('.button-icon', 18, 18)
-  converToAmpImg('.instagram-photo-link img', 50, 50, '(min-width:500px) 100%, 100%')
-  converToAmpImg('.nav-logo', 160.94, 28)
-  converToAmpImg('.footer-v1-logo', 213.02, 43)
-  converToAmpImg('.mini-icon', 14, 14)
-  converToAmpImg('.more-link-arrow-hover', 14, 14)
-  converToAmpImg('.more-link-arrow', 14, 14)
-  converToAmpImg('.category-arrow', 16, 16)
-  converToAmpImg('.close-button.w-inline-block img', 12, 12)
-  converToAmpImg('.nav-arrow', 16, 16)
-  converToAmpImg('.post-popup-close img', 12, 12)
+  converToAmpImg($, '.connect-icon img', 18, 18)
+  converToAmpImg($, '.mini-icon-grey', 14, 14)
+  converToAmpImg($, '.banner-sidebar.w-inline-block img', 300, 400)
+  converToAmpImg($, '.social-icon.w-inline-block img', 18, 18)
+  converToAmpImg($, '.button-icon', 18, 18)
+  converToAmpImg($, '.instagram-photo-link img', 50, 50, '(min-width:500px) 100%, 100%')
+  converToAmpImg($, '.nav-logo', 160.94, 28)
+  converToAmpImg($, '.footer-v1-logo', 213.02, 43)
+  converToAmpImg($, '.mini-icon', 14, 14)
+  converToAmpImg($, '.more-link-arrow-hover', 14, 14)
+  converToAmpImg($, '.more-link-arrow', 14, 14)
+  converToAmpImg($, '.category-arrow', 16, 16)
+  converToAmpImg($, '.close-button.w-inline-block img', 12, 12)
+  converToAmpImg($, '.nav-arrow', 16, 16)
+  converToAmpImg($, '.post-popup-close img', 12, 12)
 
   html = htmlMinify.minify($.html(), {
     minifyCSS: true,
