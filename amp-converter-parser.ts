@@ -1,7 +1,7 @@
 import fs from 'fs';
 import axios from 'axios';
 import cheerio from 'cheerio';
-const minify = require('html-minifier').minify;
+import htmlMinify from 'html-minifier';
 
 function getAllAttributes (node: any): Array<any> {
   return node.attributes || Object.keys(node.attribs).map(
@@ -14,13 +14,10 @@ async function main(url: string, username: string, password: string, outputPath:
     throw new Error('URL is missing...')
   }
 
-  // const inputPath = './blog-home.html'
-  // const outputPath = './build/amp/blog-home.amp.html'
-  const headPath: string = './common-head.html'
+  // const headPath: string = './common-head.html'
   const workaroundHTMLPath: string = './workaround.html'
-  // const workaroundCSSPath: string = './workaround.css'
   const commonCSSPath: string = './common.min.css'
-  const navLinkPath: string = './nav-link.html'
+  // const navLinkPath: string = './nav-link.html'
 
   // original HTML source
   // let html = fs.readFileSync(inputPath, { encoding: 'utf8', flag: 'r' });
@@ -49,12 +46,11 @@ async function main(url: string, username: string, password: string, outputPath:
   })
 
   // common amp-boilerplate and google font links
-  const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
+  const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
 
   // since the original NAV button in mobile view is controlled by js, this is a css version of that
-  // const workaroundCSS: string = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
-  let workaroundHTML: string = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
-  let navLink: string = fs.readFileSync(navLinkPath, { encoding: 'utf8', flag: 'r' });
+  let workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open="">{{nav-links}}</nav>'
+  const navLink = '<a href="{{href}}" class="nav-link w-inline-block"><div>{{text}}</div></a>'
   if (navInfo) {
     const navLinksHTML = []
     for (const info of navInfo) {
@@ -127,7 +123,7 @@ async function main(url: string, username: string, password: string, outputPath:
   converToAmpImg('.nav-arrow', 16, 16)
   converToAmpImg('.post-popup-close img', 12, 12)
 
-  html = minify($.html(), {
+  html = htmlMinify.minify($.html(), {
     minifyCSS: true,
     minifyJS: true,
     removeComments: true
