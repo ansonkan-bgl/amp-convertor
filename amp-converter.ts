@@ -22,41 +22,41 @@ function getNavInfo(html: string): Array<Array<string>> {
   return navInfo
 }
 
-async function getAmpCSS(html: string, additionalCSS: string): Promise<string> {
-  const rawCSS = []
-  const cssLinks = html.match(/<link\s*href="(.+)"\s*rel="stylesheet"\s*type="text\/css"\s*\/>/g);
-  if (cssLinks) {
-    for (let link of cssLinks) {
-      const match = link.match(/<link\s*href="(.+)"\s*rel="stylesheet"\s*type="text\/css"\s*\/>/)
-      if (match && match[1]) {
-        const result = await axios.get(match[1])
-        rawCSS.push(result.data)
-      }
-    }
-  }
+// async function getAmpCSS(html: string, additionalCSS: string): Promise<string> {
+//   const rawCSS = []
+//   const cssLinks = html.match(/<link\s*href="(.+)"\s*rel="stylesheet"\s*type="text\/css"\s*\/>/g);
+//   if (cssLinks) {
+//     for (let link of cssLinks) {
+//       const match = link.match(/<link\s*href="(.+)"\s*rel="stylesheet"\s*type="text\/css"\s*\/>/)
+//       if (match && match[1]) {
+//         const result = await axios.get(match[1])
+//         rawCSS.push(result.data)
+//       }
+//     }
+//   }
 
-  const purgedResult = await new PurgeCSS().purge({
-    content: [{ raw: html, extension: 'html' }],
-    css: [{ raw: rawCSS.join(' ') }]
-  })
+//   const purgedResult = await new PurgeCSS().purge({
+//     content: [{ raw: html, extension: 'html' }],
+//     css: [{ raw: rawCSS.join(' ') }]
+//   })
 
-  const cssList = [
-    ...(purgedResult ? purgedResult.map(x => x.css) : []),
-    additionalCSS
-  ]
+//   const cssList = [
+//     ...(purgedResult ? purgedResult.map(x => x.css) : []),
+//     additionalCSS
+//   ]
 
-  const styleBlocks = html.match(/<style>([\s\S]*?)<\/style>/g)
-  if (styleBlocks) {
-    for (let block of styleBlocks) {
-      cssList.push(block.replace('<style>', '').replace('</style>', ''))
-    }
-  }
+//   const styleBlocks = html.match(/<style>([\s\S]*?)<\/style>/g)
+//   if (styleBlocks) {
+//     for (let block of styleBlocks) {
+//       cssList.push(block.replace('<style>', '').replace('</style>', ''))
+//     }
+//   }
 
-  return cssList
-    .join(' ')
-    .replace(/\s\s+/g, ' ')
-    .replace(/!important/g, '')
-}
+//   return cssList
+//     .join(' ')
+//     .replace(/\s\s+/g, ' ')
+//     .replace(/!important/g, '')
+// }
 
 async function main(url: string, username: string, password: string, outputPath: string): Promise<string> {
   if (!url) {
@@ -67,7 +67,8 @@ async function main(url: string, username: string, password: string, outputPath:
   // const outputPath = './build/amp/blog-home.amp.html'
   const headPath: string = './common-head.html'
   const workaroundHTMLPath: string = './workaround.html'
-  const workaroundCSSPath: string = './workaround.css'
+  // const workaroundCSSPath: string = './workaround.css'
+  const commonCSSPath: string = './common.min.css'
   const navLinkPath: string = './nav-link.html'
 
   // original HTML source
@@ -94,7 +95,7 @@ async function main(url: string, username: string, password: string, outputPath:
   const ampHead = fs.readFileSync(headPath, { encoding: 'utf8', flag: 'r' });
 
   // since the original NAV button in mobile view is controlled by js, this is a css version of that
-  const workaroundCSS: string = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
+  // const workaroundCSS: string = fs.readFileSync(workaroundCSSPath, { encoding: 'utf8', flag: 'r' });
   let workaroundHTML: string = fs.readFileSync(workaroundHTMLPath, { encoding: 'utf8', flag: 'r' });
   let navLink: string = fs.readFileSync(navLinkPath, { encoding: 'utf8', flag: 'r' });
   if (navInfo) {
@@ -109,7 +110,12 @@ async function main(url: string, username: string, password: string, outputPath:
 
   let ampCSS: string = ''
   try {
-    ampCSS = await getAmpCSS(html, workaroundCSS)
+    // ampCSS = await getAmpCSS(html, workaroundCSS)
+    // fs.writeFile('common.css', ampCSS, { flag: 'w' }, function (error) {
+    //   if (error) console.error(error)
+    // })
+    const commonCSS: string = fs.readFileSync(commonCSSPath, { encoding: 'utf8', flag: 'r' });
+    ampCSS = commonCSS
   } catch (error) {
     console.log('--------------------')
     console.log('Have troubles preparing purged css...')
