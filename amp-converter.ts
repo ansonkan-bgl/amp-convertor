@@ -1,5 +1,5 @@
 import fs from 'fs';
-import { PurgeCSS } from 'purgecss';
+// import { PurgeCSS } from 'purgecss';
 import axios from 'axios';
 const minify = require('html-minifier').minify;
 
@@ -124,32 +124,28 @@ async function main(url: string, username: string, password: string, outputPath:
 
   }
 
-  html = html.replace(/<html/g, '<html ⚡ ')
-  html = html.replace(/<script[\s\S]*?<\/script>/gm, '')
-  html = html.replace(/<link[\s\S]*?rel="stylesheet"\s*type="text\/css"\s*\/>/gm, '')
-  html = html.replace(/<style[\s\S]*?<\/style>/gm, '')
-  html = html.replace(/<form id="wf-form-Footer-Form"/gm, '<form id="wf-form-Footer-Form" action="/" target="_top" ')
-  html = html.replace(/<form action="\/search" class="search-form w-form">/gm, '<form action="/search" class="search-form w-form" target="_top">')
-  html = html.replace(/(<div.class="connect-icon"><)img([\s\S]*?alt=""[\s\S]*?)\/>(<\/div>)/g, '$1amp-img$2 height="18" width="18"></amp-img>$3')
-
-  html = html.replace(/(banner-sidebar w-inline-block.><)img([\s\S]*?alt=..)\/>/g, '$1amp-img$2 height="400" width="300"></amp-img>')
-
-  html = html.replace(/(social-icon.*?w-inline-block.><)img([\s\S]*?)\/>/g, '$1amp-img$2 height="18" width="18"></amp-img>')
-  html = html.replace(/(class="button-icon.*?".*?)\/>/g, '$1 height="18" width="18"></amp-img>')
-  html = html.replace(/(instagram-photo-link[\s\S]*?w-inline-block.><)img([\s\S]*?)\/>/g, '$1amp-img$2 width="50" height="50" heights="(min-width:500px) 100%, 100%"></amp-img>')
-
-  html = html.replace(/(class=.mini-icon-grey.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
-  html = html.replace(/(class=.nav-logo.*?)\/>/g, '$1 height="28"></amp-img>')
-  html = html.replace(/(class=.footer-v1-logo.*?)\/>/g, '$1 height="43" width="213.02"></amp-img>')
-  html = html.replace(/(class=.mini-icon.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
-  html = html.replace(/(class=.more-link-arrow-hover.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
-  html = html.replace(/(class=.more-link-arrow.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
-  html = html.replace(/(class=.category-arrow.*?)\/>/g, '$1 height="16" width="16"></amp-img>')
-
-  html = html.replace(/(x.svg.[\s\S]*?alt=.*?)\/>/g, '$1 height="12" width="12"></amp-img>')
-  html = html.replace(/(class=.nav-arrow.*?)\/>/g, '$1 height="16" width="16"></amp-img>')
-
-  html = html.replace(/<img/g, '<amp-img')
+  html = html
+    .replace(/<html/g, '<html ⚡ ')
+    .replace(/<script[\s\S]*?<\/script>/gm, '')
+    .replace(/<link[\s\S]*?rel="stylesheet"\s*type="text\/css"\s*\/>/gm, '')
+    .replace(/<style[\s\S]*?<\/style>/gm, '')
+    .replace(/<form id="wf-form-Footer-Form"/gm, '<form id="wf-form-Footer-Form" action="/" target="_top" ')
+    .replace(/<form action="\/search" class="search-form w-form">/gm, '<form action="/search" class="search-form w-form" target="_top">')
+    .replace(/(<div.class="connect-icon"><)img([\s\S]*?alt=""[\s\S]*?)\/>(<\/div>)/g, '$1amp-img$2 height="18" width="18"></amp-img>$3')
+    .replace(/(banner-sidebar w-inline-block.><)img([\s\S]*?alt=..)\/>/g, '$1amp-img$2 height="400" width="300"></amp-img>')
+    .replace(/(social-icon.*?w-inline-block.><)img([\s\S]*?)\/>/g, '$1amp-img$2 height="18" width="18"></amp-img>')
+    .replace(/(class="button-icon.*?".*?)\/>/g, '$1 height="18" width="18"></amp-img>')
+    .replace(/(instagram-photo-link[\s\S]*?w-inline-block.><)img([\s\S]*?)\/>/g, '$1amp-img$2 width="50" height="50" heights="(min-width:500px) 100%, 100%"></amp-img>')
+    .replace(/(class=.mini-icon-grey.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
+    .replace(/(class=.nav-logo.*?)\/>/g, '$1 height="28"></amp-img>')
+    .replace(/(class=.footer-v1-logo.*?)\/>/g, '$1 height="43" width="213.02"></amp-img>')
+    .replace(/(class=.mini-icon.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
+    .replace(/(class=.more-link-arrow-hover.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
+    .replace(/(class=.more-link-arrow.*?)\/>/g, '$1 height="14" width="14"></amp-img>')
+    .replace(/(class=.category-arrow.*?)\/>/g, '$1 height="16" width="16"></amp-img>')
+    .replace(/(x.svg.[\s\S]*?alt=.*?)\/>/g, '$1 height="12" width="12"></amp-img>')
+    .replace(/(class=.nav-arrow.*?)\/>/g, '$1 height="16" width="16"></amp-img>')
+    .replace(/<img/g, '<amp-img')
 
   // have not found the regex bug yet, but something is causing the replace for .mini-icon-grey adding height and width into a link, so this will remove them
   html = html.replace(/(<link.rel=.prerender[\s\S]*?.)height[\s\S]*?width[\s\S]*?(>)/g, '$1$2')
@@ -159,9 +155,13 @@ async function main(url: string, username: string, password: string, outputPath:
   html = minify(html, {
     minifyCSS: true,
     minifyJS: true,
-    removeComments: true,
-    collapseInlineTagWhitespace: true
+    removeComments: true
   })
+
+  // this is a workaround fix for the minify function inserting both normal and encoded single quote together causing a invalid url in div element error
+  html = html
+    .replace(/'&quot;/g, '\'')
+    .replace(/&quot;'/g, '\'')
 
   if (outputPath) {
     try {
