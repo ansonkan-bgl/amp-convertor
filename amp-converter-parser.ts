@@ -15,20 +15,31 @@ function getAllAttributes(node: any): Array<any> {
   );
 }
 
-function converToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string) {
+function converToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string, unknownDimensions?: boolean) {
   const cheerio = $(query)
   if (!cheerio) return
 
   const nodes = cheerio.toArray()
   if (!nodes || nodes.length === 0) return
 
-  const ampImg = $(`<amp-img height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
+  const workaroundWrapper = $(`<div></div>`)
+    .css('position', 'relative')
+    .css('width', `100%`)
+    .css('height', `${height}px`)
+  
+  const ampImg = unknownDimensions ? $(`<amp-img layout="fill" class="cover"></amp-img>`) 
+  : $(`<amp-img height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
 
   nodes.forEach(n => {
     const attributes = getAllAttributes(n)
     const ampImgClone = ampImg.clone()
     attributes.forEach(attr => ampImgClone.attr(attr.name, attr.value))
-    $(n).replaceWith(ampImgClone)
+    if (unknownDimensions) {
+      $(n).wrap(workaroundWrapper.clone()).replaceWith(ampImgClone)
+    } else {
+      $(n).replaceWith(ampImgClone)
+    }
+    
   })
 }
 
@@ -56,9 +67,6 @@ async function main(url: string, outputPath: string): Promise<string> {
     const l = $(link)
     return [l.attr('href') || '', l.text()]
   })
-
-  // common amp-boilerplate and google font links
-
 
   // since the original NAV button in mobile view is controlled by js, this is a css version of that
   let _workaroundHTML = workaroundHTML
@@ -105,6 +113,7 @@ async function main(url: string, outputPath: string): Promise<string> {
   converToAmpImg($, '.close-button.w-inline-block img', 12, 12)
   converToAmpImg($, '.nav-arrow', 16, 16)
   converToAmpImg($, '.post-popup-close img', 12, 12)
+  converToAmpImg($, 'img', 320, 320, '', true)
 
   html = $.html()
   // html = htmlMinify.minify($.html(), {
