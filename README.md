@@ -1,22 +1,28 @@
 # amp-convertor
 
-- `global-replace.js` is the convertor, it replaces normal tags into amp tags and clean up other invalid tags.
-- here has 4 `blog-{something}.html` which are simple some source copy of the webflow blog pages. Use global-replace.js to test against them.
-- since all JS is removed from the page, some `workarounds.css` and `workaround.html` are for the workaround.
-- `common-head.html` includes amp-boilerplate and google font links.
+`amp-converter-parser.ts` is the convertor, it replaces normal tags into amp tags and clean up other invalid tags.
 
 ```
 cd amp-convertor
 
 npm i --g serve
-npm i
-npm run tsc
+npm i --g ts-node
+yarn install
 
 // to start local dev server
 server
 
-// convert a page
-node build/ts/amp-converter.js https://stg.cloudbet.com/en/blog <basic_auth_username> <basic_auth_password> ./build/amp/blog-home.amp.html
+// convert home page
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/ ./build/amp/home.amp.html
+
+// convert single post page
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/posts/bundesliga-round-31-europe-for-grabs ./build/amp/post.amp.html
+
+// convert categories - previews page
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/previews?eda8cc54_page=2 ./build/amp/categories.amp.html
+
+// convert tags - bitcoin page
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/tags/bitcoin?5fe33004_page=2 ./build/amp/tags.amp.html
 ```
 
 Inside of `amp-convertor.ts`, the `main` function return a amp html source as string by default. Also, accepting output file path as the 4th argument, so that you may verift the amp page locally.
