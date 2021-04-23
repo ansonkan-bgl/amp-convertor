@@ -25,11 +25,13 @@ ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/p
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/tags/bitcoin?5fe33004_page=2 ./build/amp/tags.amp.html
 ```
 
-Inside of `amp-convertor.ts`, the `main` function return a amp html source as string by default. Also, accepting output file path as the 4th argument, so that you may verift the amp page locally.
+## To verify AMP format
+Inside of `amp-converter-parser.ts`, the `main` function return a amp html source as string by default. Also, accepting output file path as an argument, so that you may verift the amp page locally.
 
-To verify, go to, for example, http://localhost:5000/build/amp/blog-categories.amp#development=1. #development=1 is need to trigger the amp validation. Open browser developer console then you will see amp validation messages.
+To verify, start local server with `serve`, go to, for example, http://localhost:5000/build/amp/blog-categories.amp#development=1. `#development=1` is need to trigger the amp validation. Open browser developer console then you will see amp validation messages.
 
-It would be more dynamic if the amp-css is prepared by fetching all style sheet links in a page then purging, merging them together but that takes more request time. So A `common.min.css` file is prepared for all of the pages. Basically, firstly copying all html source of all pages, in this case, the home, single post, tags and categories pages into one html file, do the same for css, copy them into a single css file. Then use `purgecss` to obtain a css file with only used css. Then using `uglifycss` to minify it.
+## To prepare common css file
+It would be more dynamic if the amp-css is prepared by fetching all style sheet links in a page then purging, merging them together but that takes more request time. So A `common.min.css` file is prepared for all of the pages. Basically, firstly copying all html source of all pages, in this case, the home, single post, tags and categories pages into one html file, do the same for css, copy them into a single css file. Also add any additional css if needed. Then use `purgecss` to obtain a css file with only used css. Then using `uglifycss` to minify it.
 
 ```
 // for example
