@@ -22,23 +22,13 @@ function converToAmpImg($: cheerio.Root, query: string, width: number, height: n
   const nodes = cheerio.toArray()
   if (!nodes || nodes.length === 0) return
 
-  const workaroundWrapper = $(`<div></div>`)
-    .css('position', 'relative')
-    .css('width', `100%`)
-    .css('height', `${height}px`)
-  
-  const ampImg = unknownDimensions ? $(`<amp-img layout="fill" class="cover"></amp-img>`) 
-  : $(`<amp-img height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
+  const ampImg = $(`<amp-img ${unknownDimensions ? 'layout="responsive" class="main-image"' : ''} height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
 
   nodes.forEach(n => {
     const attributes = getAllAttributes(n)
     const ampImgClone = ampImg.clone()
     attributes.forEach(attr => ampImgClone.attr(attr.name, attr.value))
-    if (unknownDimensions) {
-      $(n).wrap(workaroundWrapper.clone()).replaceWith(ampImgClone)
-    } else {
-      $(n).replaceWith(ampImgClone)
-    }
+    $(n).replaceWith(ampImgClone)
     
   })
 }
@@ -87,6 +77,7 @@ async function main(url: string, outputPath: string): Promise<string> {
   $('script').remove()
   $('style').remove()
   $('link[rel=stylesheet]').remove()
+  $('link[rel=amphtml]').remove()
   $('head').append($(`<style amp-custom>${ampCSS}</style>${ampHead}`))
   $('form').toArray().forEach(node => {
     if (!$(node).attr('action')) {
@@ -113,7 +104,7 @@ async function main(url: string, outputPath: string): Promise<string> {
   converToAmpImg($, '.close-button.w-inline-block img', 12, 12)
   converToAmpImg($, '.nav-arrow', 16, 16)
   converToAmpImg($, '.post-popup-close img', 12, 12)
-  converToAmpImg($, 'img', 320, 320, '', true)
+  converToAmpImg($, 'img', 300, 200, '', true)
 
   html = $.html()
   // html = htmlMinify.minify($.html(), {
