@@ -4,8 +4,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "cheerio": "*",
-    "html-minifier": "^4.0.0"
+    "cheerio": "*"
   },
   "devDependencies": {
     "@tsconfig/node12": "^1.0.7",

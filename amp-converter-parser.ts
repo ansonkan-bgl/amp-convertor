@@ -2,7 +2,7 @@ import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
 import cheerio from 'cheerio';
-import htmlMinify from 'html-minifier';
+// import htmlMinify from 'html-minifier';
 
 const ampCSS: string = fs.readFileSync(path.join(__dirname, 'common.min.css'), { encoding: 'utf8', flag: 'r' });
 const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
@@ -106,16 +106,17 @@ async function main(url: string, outputPath: string): Promise<string> {
   converToAmpImg($, '.nav-arrow', 16, 16)
   converToAmpImg($, '.post-popup-close img', 12, 12)
 
-  html = htmlMinify.minify($.html(), {
-    minifyCSS: true,
-    minifyJS: true,
-    removeComments: true
-  })
+  html = $.html()
+  // html = htmlMinify.minify($.html(), {
+  //   minifyCSS: true,
+  //   minifyJS: true,
+  //   removeComments: true
+  // })
 
-  // this is a workaround fix for the minify function inserting both normal and encoded single quote together causing a invalid url in div element error
-  html = html
-    .replace(/'&quot;/g, '\'')
-    .replace(/&quot;'/g, '\'')
+  // // this is a workaround fix for the minify function inserting both normal and encoded single quote together causing a invalid url in div element error
+  // html = html
+  //   .replace(/'&quot;/g, '\'')
+  //   .replace(/&quot;'/g, '\'')
 
   if (outputPath) {
     try {
