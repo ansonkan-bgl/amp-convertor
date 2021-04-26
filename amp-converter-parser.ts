@@ -2,10 +2,12 @@ import fs from 'fs';
 import path from 'path';
 import axios from 'axios';
 import cheerio from 'cheerio';
+import parse from 'url-parse';
+// import { URL } from 'url';
 // import htmlMinify from 'html-minifier';
 
 const ampCSS: string = fs.readFileSync(path.join(__dirname, 'common.min.css'), { encoding: 'utf8', flag: 'r' });
-const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
+const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
 const workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open="">{{nav-links}}</nav>'
 const navLink = '<a href="{{href}}" class="nav-link w-inline-block"><div>{{text}}</div></a>'
 
@@ -29,7 +31,34 @@ function convertToAmpImg($: cheerio.Root, query: string, width: number, height: 
     const ampImgClone = ampImg.clone()
     attributes.forEach(attr => ampImgClone.attr(attr.name, attr.value))
     $(n).replaceWith(ampImgClone)
+  })
+}
+
+function convertToAmpIFrame($: cheerio.Root, width?: number, height?: number) {
+  const iframes = $('iframe')
+  const ampIFrame = $('<amp-iframe sandbox="allow-scripts allow-same-origin" layout="responsive" frameborder="0"></amp-iframe>')
+  iframes.toArray().forEach(n => {
+    const node = $(n)
+    const attributes = getAllAttributes(n)
+    const clone = ampIFrame.clone()
+    attributes.forEach(attr => {
+      if (attr.name === 'src') {
+        const url = parse(attr.value)
+        url.set('protocol', 'https')
+        clone.attr(attr.name, url.href)
+      } else {
+        clone.attr(attr.name, attr.value)
+      }
+    })
     
+    if (!clone.attr('width') || !clone.attr('height')) {
+      clone.attr('width', node.css('width').replace('px', '') || `${width || 500}`)
+      clone.attr('height', node.css('height').replace('px', '') || `${height || 218}`)
+    }
+
+    clone.css('width', 'auto')
+    clone.css('height', 'auto')
+    node.replaceWith(clone)
   })
 }
 
@@ -105,6 +134,13 @@ async function main(url: string, outputPath: string): Promise<string> {
   convertToAmpImg($, '.nav-arrow', 16, 16)
   convertToAmpImg($, '.post-popup-close img', 12, 12)
   convertToAmpImg($, 'img', 300, 200, '', true)
+
+  // $('.post')
+  //   .last()
+  //   .append($('<iframe style=\"width: 500px; height: 281px;\" src=\"//www.youtube.com/embed/oXzM7MAzIc8\" frameborder=\"0\" allowfullscreen=\"\"></iframe>'))
+  //   .append($('<iframe width=\"500\" height=\"281\" src=\"//www.youtube.com/embed/oXzM7MAzIc8\" frameborder=\"0\" allowfullscreen=\"\"></iframe>'))
+
+  convertToAmpIFrame($)
 
   html = $.html()
   // html = htmlMinify.minify($.html(), {
