@@ -15,7 +15,7 @@ function getAllAttributes(node: any): Array<any> {
   );
 }
 
-function converToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string, unknownDimensions?: boolean) {
+function convertToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string, unknownDimensions?: boolean) {
   const cheerio = $(query)
   if (!cheerio) return
 
@@ -89,22 +89,22 @@ async function main(url: string, outputPath: string): Promise<string> {
     }
   })
 
-  converToAmpImg($, '.connect-icon img', 18, 18)
-  converToAmpImg($, '.mini-icon-grey', 14, 14)
-  converToAmpImg($, '.banner-sidebar.w-inline-block img', 300, 400)
-  converToAmpImg($, '.social-icon.w-inline-block img', 18, 18)
-  converToAmpImg($, '.button-icon', 18, 18)
-  converToAmpImg($, '.instagram-photo-link img', 50, 50, '(min-width:500px) 100%, 100%')
-  converToAmpImg($, '.nav-logo', 160.94, 28)
-  converToAmpImg($, '.footer-v1-logo', 213.02, 43)
-  converToAmpImg($, '.mini-icon', 14, 14)
-  converToAmpImg($, '.more-link-arrow-hover', 14, 14)
-  converToAmpImg($, '.more-link-arrow', 14, 14)
-  converToAmpImg($, '.category-arrow', 16, 16)
-  converToAmpImg($, '.close-button.w-inline-block img', 12, 12)
-  converToAmpImg($, '.nav-arrow', 16, 16)
-  converToAmpImg($, '.post-popup-close img', 12, 12)
-  converToAmpImg($, 'img', 300, 200, '', true)
+  convertToAmpImg($, '.connect-icon img', 18, 18)
+  convertToAmpImg($, '.mini-icon-grey', 14, 14)
+  convertToAmpImg($, '.banner-sidebar.w-inline-block img', 300, 400)
+  convertToAmpImg($, '.social-icon.w-inline-block img', 18, 18)
+  convertToAmpImg($, '.button-icon', 18, 18)
+  convertToAmpImg($, '.instagram-photo-link img', 50, 50, '(min-width:500px) 100%, 100%')
+  convertToAmpImg($, '.nav-logo', 160.94, 28)
+  convertToAmpImg($, '.footer-v1-logo', 213.02, 43)
+  convertToAmpImg($, '.mini-icon', 14, 14)
+  convertToAmpImg($, '.more-link-arrow-hover', 14, 14)
+  convertToAmpImg($, '.more-link-arrow', 14, 14)
+  convertToAmpImg($, '.category-arrow', 16, 16)
+  convertToAmpImg($, '.close-button.w-inline-block img', 12, 12)
+  convertToAmpImg($, '.nav-arrow', 16, 16)
+  convertToAmpImg($, '.post-popup-close img', 12, 12)
+  convertToAmpImg($, 'img', 300, 200, '', true)
 
   html = $.html()
   // html = htmlMinify.minify($.html(), {
