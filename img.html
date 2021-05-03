@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>Responsive HTML images demo</title>
+
+  <script>
+    if (true || location.hostname.includes('cloudbet-weglot.com')) {
+      const script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = 'https://cdn.weglot.com/weglot.min.js';
+      script.onload = function () {
+        Weglot.initialize({ api_key: 'wg_d84b0abc748dbdc714f7590617e3e2d82' });
+      }
+      document.head.append(script);
+
+    }
+  </script>
+</head>
+
+<body>
+  <header>
+
+  </header>
+
+  <main>
+    <section>
+      <picture>
+        <source media="(max-width: 600px)"
+          srcset="https://res.cloudinary.com/betengine/image/fetch/f_auto,q_auto:low,dpr_auto,c_fill,w_800,h_800/https://assets.website-files.com/60656328ea868015ab07f33f/6083c5b493104149af303821_Table-games-02.jpg">
+        <source media="(min-width: 601px)"
+          srcset="https://res.cloudinary.com/betengine/image/fetch/f_auto,q_auto:low,dpr_auto,c_fill,h_1000/https://assets.website-files.com/60656328ea868015ab07f33f/6083c5b493104149af303821_Table-games-02.jpg">
+        <img class="thumbnail"
+          src="https://res.cloudinary.com/betengine/image/fetch/f_auto,q_auto:low,dpr_auto,c_fill,h_1000/https://assets.website-files.com/60656328ea868015ab07f33f/6083c5b493104149af303821_Table-games-02.jpg"
+          alt="Chris standing up holding his daughter Elva">
+      </picture>
+    </section>
+  </main>
+</body>
+
+</html>

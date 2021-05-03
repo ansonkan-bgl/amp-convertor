@@ -12,8 +12,11 @@ yarn install
 // to start local dev server
 server
 
-// convert home page
+// convert blog home page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/ ./build/amp/home.amp.html
+
+// convert Cloudbet home page
+ts-node amp-converter-parser.ts https://www.cloudbet-weglot.com/ ./build/amp/cb.amp.html 1
 
 // convert single post page
 ts-node amp-converter-parser.ts https://www.cloudbet.com/en/blog/posts/cloudbet-always-growing ./build/amp/post.amp.html
