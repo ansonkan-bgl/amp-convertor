@@ -17,6 +17,7 @@ ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/ ./build/amp
 
 // convert single post page
 ts-node amp-converter-parser.ts https://www.cloudbet.com/en/blog/posts/cloudbet-always-growing ./build/amp/post.amp.html
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/posts/ncaa-buzzer-beater-heartbreak-well-help-ease-the-pain ./build/amp/post.amp.html
 
 // convert categories - previews page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/previews?eda8cc54_page=2 ./build/amp/categories.amp.html

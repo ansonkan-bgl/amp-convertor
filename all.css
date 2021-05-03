@@ -3911,6 +3911,10 @@ label {
     object-fit: contain;
 }
 
+.thumbnail.cover img {
+    object-fit: cover;
+}
+
 @media screen and (max-width: 479px) {
     .main-image {
         height: 180px;
