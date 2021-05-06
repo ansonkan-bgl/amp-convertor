@@ -12,7 +12,9 @@ const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s s
 const workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open="">{{nav-links}}</nav>'
 const navLink = '<a href="{{href}}" class="nav-link w-inline-block"><div>{{text}}</div></a>'
 const ampImgAttrBannedNames = [
-  'loading'
+  'loading',
+  'width',
+  'height'
 ]
 const ampVideoAttrBannedNames = [
   'playsinline'
@@ -24,14 +26,14 @@ function getAllAttributes(node: any): Array<any> {
   ) : []);
 }
 
-function convertToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string, unknownDimensions?: boolean) {
+function convertToAmpImg($: cheerio.Root, query: string, width: number, height: number, heights?: string, unknownDimensions?: boolean, noDefaultClass?: boolean) {
   const cheerio = $(query)
   if (!cheerio) return
 
   const nodes = cheerio.toArray()
   if (!nodes || nodes.length === 0) return
 
-  const ampImg = $(`<amp-img ${unknownDimensions ? 'layout="responsive" class="main-image"' : ''} height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
+  const ampImg = $(`<amp-img ${unknownDimensions ? `layout="responsive" class="${!noDefaultClass ? 'main-image' : ''}"` : ''} height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
 
   nodes.forEach(n => {
     const attributes = getAllAttributes(n)
@@ -39,7 +41,7 @@ function convertToAmpImg($: cheerio.Root, query: string, width: number, height: 
       .map(arr => {
         if (arr.name === 'class') {
           if (arr.value.includes('thumbnail')) arr.value += ' cover'
-          else arr.value += ' main-image'
+          else if (!noDefaultClass) arr.value += ' main-image'
         }
         return arr
       })
@@ -77,23 +79,34 @@ function convertToAmpIFrame($: cheerio.Root, width?: number, height?: number) {
   })
 }
 
-function convertHeroVideoToAmpVideo($: cheerio.Root, width?: number, height?: number) {
-  const videos = $('video')
-  const ampVideo = $('<amp-video layout="responsive"></amp-video>')
+function convertVideoToAmpVideo($: cheerio.Root, query: string = 'video', width?: number, height?: number) {
+  const videos = $(query)
+  const ampVideo = $('<amp-video layout="responsive" class="cover" poster="#"></amp-video>')
   videos.toArray().forEach(n => {
     const node = $(n)
     const attributes = getAllAttributes(n)
       .filter(arr => !ampVideoAttrBannedNames.includes(arr.name))
+      .map(arr => {
+        if (arr.name === 'class') arr.value += ' cover'
+        return arr
+      })
     const clone = ampVideo.clone()
     attributes.forEach(attr => clone.attr(attr.name, attr.value))
+
+    if (clone.css('background-image')) {
+      clone.attr(
+        'poster',
+        clone.css('background-image')
+          .replace('url(', '')
+          .replace(');', '')
+          .replace(')', '')
+      )
+    }
 
     if (!clone.attr('width') || !clone.attr('height')) {
       clone.attr('width', node.css('width') ? node.css('width').replace('px', '') : `${width || 500}`)
       clone.attr('height', node.css('height') ? node.css('height').replace('px', '') : `${height || 500}`)
     }
-
-    clone.css('width', 'auto')
-    clone.css('height', 'auto')
 
     const children = node.children()
     clone.append(children)
@@ -217,7 +230,9 @@ async function getCbHomeAmp(url: string, outputPath: string): Promise<string> {
   $('#blog-nav-search-form').remove()
   $('link[rel=stylesheet]').remove()
   $('link[rel=amphtml]').remove()
-  $('head').append($(`<style amp-custom>${cbHomeCSS}</style>${ampHead}`))
+  $('head')
+    .append($('<link rel="canonical" href="https://www.cloudbet.com/">'))
+    .append($(`<style amp-custom>${cbHomeCSS}</style>${ampHead}`))
   $('form').toArray().forEach(node => {
     if (!$(node).attr('action')) {
       $(node).attr('action', '/')
@@ -231,26 +246,48 @@ async function getCbHomeAmp(url: string, outputPath: string): Promise<string> {
   // add workaround for language dropdown menu
   const language = $('#language-select')
   language.wrap($(`<label for="workaround__checkbox" id="workaround__label"></label>`))
-  // const label = $(`<label for="workaround__checkbox" id="workaround__label"></label>`);
-  // $('#language-select .w-dropdown-list').insertBefore($('<input type="checkbox" id="workaround__checkbox" style="display: none;">'))
   $('<input type="checkbox" id="workaround__checkbox" style="display: none;">').insertBefore('#language-select .w-dropdown-list')
 
+  convertToAmpImg($, '.footer-logo', 178, 35.94, '', true, true)
   convertToAmpImg($, '.sub-hero-button img', 16, 16)
   convertToAmpImg($, '.div-block-8 img', 58, 58)
   convertToAmpImg($, '.account-icons', 112, 112)
-  convertToAmpImg($, '.image-5', 506, 204, '', true)
+  convertToAmpImg($, '.image-5', 506, 204, '', true, true)
   convertToAmpImg($, '.image-get-started', 48, 48)
   convertToAmpImg($, '.footer-icon', 48, 48)
-  convertToAmpImg($, '.image-9', 500, 500, '', true)
+  convertToAmpImg($, '.buy-btc', 300, 300)
+  convertToAmpImg($, '.html-embed-4 img', 1, 1, '', true, true)
+  convertToAmpImg($, '.image-9', 300, 300)
+  convertToAmpImg($, '.image-10', 300, 300)
+  convertToAmpImg($, '.image-15', 3, 2, '', true, true)
   convertToAmpImg($, '.image-11', 90, 80.844)
   convertToAmpImg($, '.image-12', 150, 95.313)
   convertToAmpImg($, '.live-dealer', 120.203, 253.125)
-  convertToAmpImg($, '.logo', 100, 20.19)
+  convertToAmpImg($, '.logo', 100, 61)
+  convertToAmpImg($, '.image-13', 16, 16)
   convertToAmpImg($, '.image-14', 23, 23)
   convertToAmpImg($, '.language-dropdown a img', 16, 16)
   convertToAmpImg($, '.arrow', 22, 37)
+  convertToAmpImg($, ".social-symbol", 18, 18)
+
   convertToAmpImg($, 'img', 300, 200, '', true)
-  convertHeroVideoToAmpVideo($)
+  convertVideoToAmpVideo($, '.sub-hero-content-wrap video', 1, 1)
+  convertVideoToAmpVideo($, '.summary video', 1, 4)
+
+  // replace anhor relative href to prevent wrong href, e.g. auth/sign-up -> https://stg.cloudbet.com/en/amp/auth/sign-in
+  const anchors = $('a')
+  anchors
+    .toArray()
+    .filter(a => {
+      const base = $(a)
+      const href = base.attr('href')
+      return !(!href || href.match(/^http/i) || href.match(/^\//i))
+    })
+    .forEach(a => {
+      const base = $(a)
+      console.log(base.attr('href'), `https://stg.cloudbet.com/${base.attr('href')}`)
+      base.attr('href', `https://stg.cloudbet.com/${base.attr('href')}`)
+    })
 
   html = $.html()
 

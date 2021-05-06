@@ -32,11 +32,6 @@ h1 {
     margin: .67em 0
 }
 
-h3,
-h4 {
-    margin-top: 0;
-}
-
 sub {
     font-size: 75%;
     line-height: 0;
@@ -414,6 +409,10 @@ h3 {
     margin-left: auto
 }
 
+.container.navbar {
+    width: 100vw
+}
+
 .d-mt-25 {
     margin-top: 25px
 }
@@ -608,6 +607,17 @@ h3 {
     background-color: #1f2634
 }
 
+.btn.card {
+    position: absolute;
+    left: 0;
+    top: auto;
+    right: 0;
+    bottom: 20px;
+    max-width: 200px;
+    margin-right: auto;
+    margin-left: auto
+}
+
 .btn.hero {
     margin-top: 24px;
     text-decoration: none
@@ -799,7 +809,6 @@ h3 {
 .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer.box-shadow {
     position: relative;
     height: auto;
-    min-height: 360px;
     background-color: #222133;
     text-decoration: none
 }
@@ -807,6 +816,19 @@ h3 {
 .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer.box-shadow.different-bg {
     position: relative;
     background-image: none
+}
+
+.image-5 {
+    position: relative;
+    z-index: 2;
+    display: block;
+    margin-top: auto;
+    margin-right: 0;
+    height: auto;
+}
+
+.image-5.main-image {
+    height: auto;
 }
 
 .image-get-started {
@@ -838,8 +860,8 @@ h3 {
 }
 
 .grid-footer.d-ptb-50 {
-    -ms-grid-columns: 1.5fr 1fr 1fr 1fr;
-    grid-template-columns: 1.5fr 1fr 1fr 1fr
+    -ms-grid-columns: 2fr 1fr 1fr 1fr 1fr;
+    grid-template-columns: 2fr 1fr 1fr 1fr 1fr
 }
 
 .footer-links-wrap {
@@ -911,9 +933,8 @@ h3 {
     display: none
 }
 
-.footer-logo.m-mb-50 {
-    width: 178px;
-    margin-bottom: 24px
+.height-30.m-mb-50 {
+    width: 178px
 }
 
 .nav-mobile.bc-4-slate.m-ptb-15.c-nav-mobile {
@@ -921,10 +942,12 @@ h3 {
 }
 
 .ta-center-copy {
-    position: relative;
-    z-index: 2;
     margin-bottom: 20px;
-    text-align: left;
+    text-align: left
+}
+
+.icon {
+    background-color: #fff
 }
 
 .footer-items-wrap {
@@ -989,14 +1012,6 @@ h3 {
     padding-top: 120px;
     padding-right: 36px;
     padding-bottom: 140px
-}
-
-.sub-hero-content-wrap amp-video {
-    position: absolute;
-    left: 0;
-    top: 0;
-    bottom: 0;
-    right: 0;
 }
 
 .sub-hero-content {
@@ -1204,6 +1219,12 @@ h3 {
     margin: 24px auto
 }
 
+.buy-btc {
+    max-height: 500px;
+    max-width: 100%;
+    margin: auto
+}
+
 .nav-content {
     margin-left: auto
 }
@@ -1232,7 +1253,19 @@ h3 {
     max-width: 500px;
     min-height: 400px;
     min-width: 400px;
-    padding-top: 100%
+    padding-top: 100%;
+    background-image: url("https://assets.website-files.com/608797bd8fee8c59d4c0029e/608b34af6f6fe72b07c78149_Phone0000.png");
+    background-position: 50% 100%;
+    background-size: cover
+}
+
+.live-dealer {
+    position: absolute;
+    left: 0;
+    top: auto;
+    right: auto;
+    bottom: 0;
+    height: 75%
 }
 
 .image-12 {
@@ -1273,6 +1306,10 @@ h3 {
 
 .icon-2 {
     padding-left: 0;
+    color: hsla(0, 0%, 100%, .8)
+}
+
+.language {
     color: hsla(0, 0%, 100%, .8)
 }
 
@@ -1330,6 +1367,25 @@ amp-img.hero-bg>img {
     object-fit: cover;
 }
 
+.image-15 {
+    position: absolute;
+    left: 0;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    z-index: auto;
+    width: 100%
+}
+
+.image-16 {
+    position: absolute;
+    left: 0;
+    top: auto;
+    right: 0;
+    bottom: 0;
+    width: 100%
+}
+
 .dropdown-list-2 {
     min-width: 150px
 }
@@ -1348,118 +1404,7 @@ amp-img.hero-bg>img {
     margin-left: auto
 }
 
-.footer-social-column {
-    padding-right: 15px;
-    padding-bottom: 64px;
-    padding-left: 15px
-}
-
-.social-wrap {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    margin-right: 0;
-    margin-bottom: 6px;
-    margin-left: 0;
-    padding: 0;
-    flex-direction: column;
-    -webkit-box-pack: start;
-    -webkit-justify-content: flex-start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
-    -webkit-box-align: start;
-    -webkit-align-items: start;
-    -ms-flex-align: start;
-    align-items: start;
-    border-radius: 6px
-}
-
-.connect-link {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    padding: 8px 8px 8px 0;
-    -webkit-box-pack: start;
-    -webkit-justify-content: flex-start;
-    -ms-flex-pack: start;
-    justify-content: flex-start;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-transition: color 150ms;
-    transition: color 150ms;
-    color: hsla(0, 0%, 100%, .6);
-    text-decoration: none
-}
-
-.connect-link:hover {
-    color: #f6871f
-}
-
-.connect-icon {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    width: 30px;
-    height: 30px;
-    padding: 4px;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-flex: 0;
-    -webkit-flex: 0 0 auto;
-    -ms-flex: 0 0 auto;
-    flex: 0 0 auto;
-    border: 2px solid #e6e6e6;
-    border-radius: 50%;
-    background-color: #fff;
-    -webkit-transition: border-color .4s;
-    transition: border-color .4s
-}
-
-.connect-icon:hover {
-    border-width: 2px;
-    border-color: #f6871f
-}
-
-.connect-link-text {
-    margin-left: 16px;
-    font-weight: 400;
-    text-decoration: none
-}
-
-.social-symbol {
-    opacity: .9
-}
-
-.html-embed-4 {
-    position: absolute;
-    left: 0;
-    top: 0;
-    right: 0;
-    bottom: auto;
-    -o-object-fit: fill;
-    object-fit: fill
-}
-
-.html-embed-5,
-.html-embed-6 {
-    position: absolute;
-    left: 0;
-    top: auto;
-    right: 0;
-    bottom: 0
-}
-
 @media screen and (max-width:991px) {
-    .footer-logo.m-mb-50 {
-        width: 100%;
-    }
     .container {
         width: 90vw
     }
@@ -1485,9 +1430,6 @@ amp-img.hero-bg>img {
         -ms-grid-rows: auto auto;
         grid-template-rows: auto auto
     }
-    .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer.box-shadow {
-        min-height: 360px
-    }
     .hide-on-desktop.ta-center {
         display: block
     }
@@ -1508,11 +1450,18 @@ amp-img.hero-bg>img {
         padding-top: 60px;
         padding-bottom: 60px
     }
+    .buy-btc,
     .og-casino-wrapper {
         margin-bottom: 40px
     }
     .nav-content {
         display: block
+    }
+    .image-10,
+    .image-9 {
+        max-height: 500px;
+        max-width: 100%;
+        margin: auto;
     }
     .dropdown-toggle {
         margin-left: 20px
@@ -1526,47 +1475,9 @@ amp-img.hero-bg>img {
         -o-object-fit: fill;
         object-fit: fill
     }
-    .footer-social-column {
-        width: 50%;
-        padding-right: 4%;
-        padding-left: 4%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .social-wrap {
-        margin-right: 8px;
-        margin-left: 8px;
-        align-items: center;
-    }
-    .connect-link {
-        -webkit-box-orient: vertical;
-        -webkit-box-direction: normal;
-        -webkit-flex-direction: column;
-        -ms-flex-direction: column;
-        flex-direction: column;
-        -webkit-box-pack: center;
-        -webkit-justify-content: center;
-        -ms-flex-pack: center;
-        justify-content: center;
-        -webkit-box-flex: 1;
-        -webkit-flex: 1;
-        -ms-flex: 1;
-        flex: 1
-    }
-    .connect-link-text {
-        margin-top: 8px;
-        margin-left: 0;
-        font-size: 12px;
-        line-height: 20px
-    }
 }
 
 @media screen and (max-width:767px) {
-    .footer-logo.m-mb-50 {
-        width: 178px;
-    }
     .container {
         width: 90vw
     }
@@ -1586,6 +1497,12 @@ amp-img.hero-bg>img {
     }
     .btn.secondary.d-mr-10 {
         border-color: #32374d
+    }
+    .btn.card {
+        left: 20px;
+        top: auto;
+        right: auto;
+        bottom: 20px
     }
     .m-mt-0 {
         margin-top: 0
@@ -1656,6 +1573,13 @@ amp-img.hero-bg>img {
         background-position: 0 0;
         background-size: auto
     }
+    .image-5 {
+        position: absolute;
+        left: 0;
+        top: auto;
+        right: 0;
+        bottom: 0
+    }
     .grid-footer.d-ptb-50 {
         grid-row-gap: 10px;
         -ms-grid-columns: 1fr;
@@ -1685,7 +1609,7 @@ amp-img.hero-bg>img {
     .hide-mobile {
         display: none
     }
-    .footer-logo {
+    .height-30 {
         height: 30px
     }
     .nav-mobile {
@@ -1765,13 +1689,29 @@ amp-img.hero-bg>img {
         max-height: 400px;
         max-width: 400px
     }
+    .buy-btc {
+        max-height: 400px
+    }
     .nav-content {
         display: none
     }
-    .casino-video-mobile,
-    .esports-video-mobile,
+    .casino-video-mobile {
+        display: block
+    }
+    .casino-video-mobile.m-hide {
+        display: none
+    }
+    .esports-video-mobile {
+        display: block
+    }
+    .esports-video-mobile.m-hide {
+        display: none
+    }
     .sports-video-mobile {
         display: block
+    }
+    .sports-video-mobile.m-hide {
+        display: none
     }
     .hero-bg {
         left: 0;
@@ -1781,120 +1721,6 @@ amp-img.hero-bg>img {
         height: auto;
         -o-object-fit: fill;
         object-fit: fill
-    }
-    .footer-social-column {
-        width: 100%;
-        padding-right: 8px;
-        padding-bottom: 48px;
-        padding-left: 8px;
-        display: flex;
-        justify-content: space-between;
-        flex-direction: row;
-    }
-    .social-wrap {
-        padding-right: 24px;
-        padding-left: 24px;
-        -webkit-flex-wrap: wrap;
-        -ms-flex-wrap: wrap;
-        flex-wrap: wrap;
-        flex-direction: row;
-    }
-    .connect-link {
-        padding: 4px
-    }
-    .connect-link-text {
-        display: none
-    }
-    .html-embed-5,
-    .html-embed-6 {
-        position: absolute;
-        left: 0;
-        top: auto;
-        right: 0;
-        bottom: 0
-    }
-}
-
-@media screen and (max-width:479px) {
-    .div-block-8 {
-        -ms-grid-rows: auto auto;
-        grid-template-rows: auto auto
-    }
-    .grid-get-started {
-        -ms-grid-columns: 100%;
-        grid-template-columns: 100%
-    }
-    .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer {
-        position: relative;
-        overflow: hidden;
-        height: 475px;
-        min-height: 475px
-    }
-    .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer.box-shadow {
-        min-height: 320px
-    }
-    .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer.box-shadow.different-bg {
-        min-height: 300px
-    }
-    .sub-hero-content-wrap {
-        padding-right: 0;
-        padding-bottom: 48px;
-        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(34, 33, 51, .6)), to(rgba(34, 33, 51, .6)));
-        background-image: linear-gradient(180deg, rgba(34, 33, 51, .6), rgba(34, 33, 51, .6))
-    }
-    .sub-hero-cta {
-        padding-bottom: 0;
-        background-image: none;
-        background-size: auto;
-        background-repeat: repeat
-    }
-    .subhead-paragraph {
-        max-width: 30ch;
-        text-align: center
-    }
-    .og-casino-wrapper {
-        width: 100%;
-        height: 100%
-    }
-    .og-casino-content {
-        max-height: 80vw;
-        max-width: 80vw;
-        min-height: 70vw;
-        min-width: 70vw;
-        margin-right: auto;
-        margin-left: auto
-    }
-    .dropdown-toggle {
-        margin-left: 0;
-        font-size: 16px
-    }
-    .footer-social-column {
-        padding-right: 8px;
-        padding-left: 8px;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-    }
-    .social-wrap {
-        -webkit-box-pack: start;
-        -webkit-justify-content: flex-start;
-        -ms-flex-pack: start;
-        justify-content: flex-start;
-        flex-direction: row;
-    }
-    .connect-link {
-        -webkit-box-flex: 0;
-        -webkit-flex: 0 auto;
-        -ms-flex: 0 auto;
-        flex: 0 auto
-    }
-    .html-embed-5,
-    .html-embed-6 {
-        position: absolute;
-        left: 0;
-        top: auto;
-        right: 0;
-        bottom: 0
     }
 }
 
@@ -1926,6 +1752,14 @@ amp-img.hero-bg>img {
     justify-self: center
 }
 
+#w-node-_90c74672-5030-97d9-7fc6-4b93e66fcdcd-2f52e9c8,
+#w-node-c35c1681-bdc3-0b8f-3926-a686bf74c77f-2f52e9c8 {
+    -webkit-align-self: end;
+    -ms-flex-item-align: end;
+    -ms-grid-row-align: end;
+    align-self: end
+}
+
 @media screen and (max-width:991px) {
     #w-node-_1604131d-30d8-3bfe-d871-02512eed09ae-2f52e9c8 {
         -ms-grid-column: span 1;
@@ -1953,9 +1787,81 @@ amp-img.hero-bg>img {
         -ms-flex-order: 9999;
         order: 9999
     }
+    #w-node-_6695f3c2-50a6-38f5-79f6-1d76ac27f80d-2f52e9c8 {
+        -ms-grid-column-align: center;
+        justify-self: center
+    }
 }
 
 @media screen and (max-width:479px) {
+    .div-block-8 {
+        -ms-grid-rows: auto auto;
+        grid-template-rows: auto auto
+    }
+    .grid-get-started {
+        -ms-grid-columns: 100%;
+        grid-template-columns: 100%
+    }
+    .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer {
+        position: relative;
+        overflow: hidden;
+        height: 475px;
+        min-height: 475px
+    }
+    .card-offer.d-ptb-30.d-prl-30.bc-4-slate.c-card-offer.box-shadow {
+        min-height: 320px
+    }
+    .image-5 {
+        position: absolute;
+        left: 0;
+        top: auto;
+        right: 0;
+        bottom: 0;
+        display: block;
+        width: 130%;
+        height: auto;
+        margin-right: 0;
+        margin-left: auto
+    }
+    .sub-hero-content-wrap {
+        padding-right: 0;
+        padding-bottom: 48px;
+        background-image: -webkit-gradient(linear, left top, left bottom, from(rgba(34, 33, 51, .6)), to(rgba(34, 33, 51, .6)));
+        background-image: linear-gradient(180deg, rgba(34, 33, 51, .6), rgba(34, 33, 51, .6))
+    }
+    .sub-hero-cta {
+        padding-bottom: 0;
+        background-image: none;
+        background-size: auto;
+        background-repeat: repeat
+    }
+    .subhead-paragraph {
+        max-width: 30ch;
+        text-align: center
+    }
+    .og-casino-wrapper {
+        width: 100%;
+        height: 100%
+    }
+    .buy-btc {
+        width: 80vw;
+        height: 80vw
+    }
+    .og-casino-content {
+        max-height: 80vw;
+        max-width: 80vw;
+        min-height: 70vw;
+        min-width: 70vw;
+        margin-right: auto;
+        margin-left: auto
+    }
+    .dropdown-toggle {
+        margin-left: 0;
+        font-size: 16px
+    }
+    .language {
+        font-size: 16px
+    }
     #w-node-_4ee94959-1e9e-8d2e-cc18-da003ff5ba68-2f52e9c8,
     #w-node-c635f012-dfcb-bf0d-3a72-868e7627e7af-2f52e9c8 {
         -ms-grid-column-align: center;
@@ -2006,7 +1912,7 @@ amp-img.hero-bg>img {
     max-height: 50vh;
     min-width: 170px;
     overflow: auto;
-    position: absolute;
+    position: fixed;
     right: 5px;
 }
 
@@ -2031,29 +1937,8 @@ amp-video {
     background-position: 50% 50%;
 }
 
-amp-img.image-5>img {
-    object-fit: contain;
-}
-
-.d-mb-40.fc-2-white.cb-heading-2 {
-    font-family: Poppins, sans-serif;
-    font-size: 34px;
-    line-height: 1.3;
-    text-align: center;
-}
-
-.getting-started-headings.link-footer.no-underline {
-    margin-top: 0;
-    margin-bottom: 0;
-    text-decoration: none;
-}
-
 @media screen and (max-width: 479px) {
     .main-image {
         height: 180px;
-    }
-    .connect-link-text {
-        display: block;
-        font-size: 10px;
     }
 }

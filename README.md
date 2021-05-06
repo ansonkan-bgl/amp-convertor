@@ -24,6 +24,7 @@ ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/posts/ncaa-b
 
 // convert categories - previews page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/previews?eda8cc54_page=2 ./build/amp/categories.amp.html
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/in-the-cloud ./build/amp/categories.amp.html
 
 // convert tags - bitcoin page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/tags/bitcoin?5fe33004_page=2 ./build/amp/tags.amp.html
