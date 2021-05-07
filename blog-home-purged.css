@@ -5,6 +5,7 @@ html {
     height: 100%
 }
 
+
 header,
 nav,
 section {
@@ -76,7 +77,7 @@ input[type=search]::-webkit-search-decoration {
 
 [class*=" w-icon-"],
 [class^=w-icon-] {
-    font-family: webflow-icons;
+    font-family: webflow-icons!important;
     speak: none;
     font-style: normal;
     font-weight: 400;
@@ -86,6 +87,7 @@ input[type=search]::-webkit-search-decoration {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale
 }
+
 
 .w-icon-dropdown-toggle:before {
     content: "\e603"
@@ -184,37 +186,37 @@ input.w-button {
 }
 
 .w-webflow-badge {
-    position: fixed;
-    display: inline-block;
-    visibility: visible;
-    z-index: 2147483647;
-    top: auto;
-    right: 12px;
-    bottom: 12px;
-    left: auto;
-    color: #aaadb0;
-    background-color: #fff;
-    border-radius: 3px;
-    padding: 6px 8px 6px 6px;
-    font-size: 12px;
-    opacity: 1;
-    line-height: 14px;
-    text-decoration: none;
-    transform: none;
-    margin: 0;
-    width: auto;
-    height: auto;
-    overflow: visible;
+    position: fixed!important;
+    display: inline-block!important;
+    visibility: visible!important;
+    z-index: 2147483647!important;
+    top: auto!important;
+    right: 12px!important;
+    bottom: 12px!important;
+    left: auto!important;
+    color: #aaadb0!important;
+    background-color: #fff!important;
+    border-radius: 3px!important;
+    padding: 6px 8px 6px 6px!important;
+    font-size: 12px!important;
+    opacity: 1!important;
+    line-height: 14px!important;
+    text-decoration: none!important;
+    transform: none!important;
+    margin: 0!important;
+    width: auto!important;
+    height: auto!important;
+    overflow: visible!important;
     white-space: nowrap;
     box-shadow: 0 0 0 1px rgba(0, 0, 0, .1), 0 1px 3px rgba(0, 0, 0, .1);
     cursor: pointer
 }
 
 .w-webflow-badge>img {
-    display: inline-block;
-    visibility: visible;
-    opacity: 1;
-    vertical-align: middle
+    display: inline-block!important;
+    visibility: visible!important;
+    opacity: 1!important;
+    vertical-align: middle!important
 }
 
 .w-embed:after,
@@ -333,6 +335,7 @@ html input[type=button] {
     margin-right: auto;
     z-index: 900
 }
+
 
 .w-dropdown-toggle {
     position: relative;
@@ -1963,25 +1966,8 @@ ol {
     margin-left: 0
 }
 
-#language-select>div {
-    display: flex;
-}
-
-#language-select nav {
-    max-height: 50vh;
-    min-width: 170px;
-    overflow: auto;
-    position: absolute;
-    right: 5px;
-}
-
-#workaround__checkbox:checked~nav {
-    display: block;
-}
-
 .dropdown-toggle {
-    margin-left: 0;
-    line-height: initial;
+    margin-left: 0
 }
 
 .icon-2 {
@@ -2061,6 +2047,7 @@ ol {
     .thumbnail-medium {
         height: 35vw
     }
+    
     .up-button {
         display: none
     }
@@ -2479,6 +2466,7 @@ ol {
         -ms-grid-columns: 100%;
         grid-template-columns: 100%
     }
+    
     .post-popup {
         width: auto;
         margin-right: 12px
@@ -2511,73 +2499,4 @@ ol {
     font-weight: 600;
     font-style: normal;
     font-display: swap;
-}
-
-#workaround-overlay-menu__overlay-menu {
-    display: none;
-}
-
-@media screen and (max-width: 991px) {
-    #workaround-overlay-menu__label {
-        margin-bottom: 0;
-    }
-    #workaround-overlay-menu__overlay-menu {
-        transform: translateY(-250px);
-        transition: transform 250ms ease-in-out;
-        display: flex;
-        flex-direction: column;
-        z-index: -1;
-        margin-top: 0;
-        justify-content: center;
-        flex-wrap: wrap;
-    }
-    #workaround-overlay-menu__checkbox:checked~#workaround-overlay-menu__overlay-menu {
-        transform: translateX(0);
-    }
-}
-
-.post-popup {
-    display: none;
-}
-
-.post-bottom-info {
-    gap: 3px;
-}
-
-.blurbg {
-    -webkit-backdrop-filter: blur(16px);
-    backdrop-filter: blur(16px);
-}
-
-.w-webflow-badge {
-    display: none;
-}
-
-.main-image {
-    width: 100%;
-    height: 280px;
-}
-
-.main-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}
-
-.thumbnail.cover img {
-    object-fit: cover;
-}
-
-.nav-links-wrapper,
-.lang-links-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-@media screen and (max-width: 479px) {
-    .main-image {
-        height: 180px;
-    }
 }

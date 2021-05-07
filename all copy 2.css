@@ -1963,25 +1963,8 @@ ol {
     margin-left: 0
 }
 
-#language-select>div {
-    display: flex;
-}
-
-#language-select nav {
-    max-height: 50vh;
-    min-width: 170px;
-    overflow: auto;
-    position: absolute;
-    right: 5px;
-}
-
-#workaround__checkbox:checked~nav {
-    display: block;
-}
-
 .dropdown-toggle {
-    margin-left: 0;
-    line-height: initial;
+    margin-left: 0
 }
 
 .icon-2 {
@@ -2525,7 +2508,6 @@ ol {
         transform: translateY(-250px);
         transition: transform 250ms ease-in-out;
         display: flex;
-        flex-direction: column;
         z-index: -1;
         margin-top: 0;
         justify-content: center;
@@ -2566,14 +2548,6 @@ ol {
 
 .thumbnail.cover img {
     object-fit: cover;
-}
-
-.nav-links-wrapper,
-.lang-links-wrapper {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
 }
 
 @media screen and (max-width: 479px) {

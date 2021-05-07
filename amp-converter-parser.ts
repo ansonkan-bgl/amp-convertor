@@ -6,10 +6,11 @@ import parse from 'url-parse';
 // import { URL } from 'url';
 // import htmlMinify from 'html-minifier';
 
-const blogCSS: string = fs.readFileSync(path.join(__dirname, 'common.min.css'), { encoding: 'utf8', flag: 'r' });
+const blogCSS: string = fs.readFileSync(path.join(__dirname, 'blog.min.css'), { encoding: 'utf8', flag: 'r' });
 const cbHomeCSS: string = fs.readFileSync(path.join(__dirname, 'cb-home.min.css'), { encoding: 'utf8', flag: 'r' });
 const ampHead = '<style amp-boilerplate> body{-webkit-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -moz-animation: -amp-start 8s steps(1, end) 0s 1 normal both; -ms-animation: -amp-start 8s steps(1, end) 0s 1 normal both; animation: -amp-start 8s steps(1, end) 0s 1 normal both}@-webkit-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-moz-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-ms-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@-o-keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}@keyframes -amp-start{from{visibility: hidden}to{visibility: visible}}</style><noscript> <style amp-boilerplate> body{-webkit-animation: none; -moz-animation: none; -ms-animation: none; animation: none}</style></noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Roboto"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Noto%20Sans%20HK"/><link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open%20Sans"/><script async custom-element="amp-form" src="https://cdn.ampproject.org/v0/amp-form-0.1.js"></script><script async custom-element="amp-iframe" src="https://cdn.ampproject.org/v0/amp-iframe-0.1.js"></script><script async custom-element="amp-video" src="https://cdn.ampproject.org/v0/amp-video-0.1.js"></script><script async src="https://cdn.ampproject.org/v0.js"></script>';
-const workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open="">{{nav-links}}</nav>'
+// const workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open=""><div class="nav-links-wrapper>{{nav-links}}</div><div class="lang-links-wrapper>{{lang-links}}</div></nav>'
+const workaroundHTML = '<input type="checkbox" class="workaround-overlay-menu workaround-overlay-menu__checkbox" id="workaround-overlay-menu__checkbox" style="display: none;"><nav role="navigation" id="workaround-overlay-menu__overlay-menu" class="workaround-overlay-menu workaround-overlay-menu__overlay-menu nav-menu-v1 w-nav-menu" data-nav-menu-open=""><div class="nav-links-wrapper">{{nav-links}}</div><div class="lang-links-wrapper">{{lang-links}}</div></nav>'
 const navLink = '<a href="{{href}}" class="nav-link w-inline-block"><div>{{text}}</div></a>'
 const ampImgAttrBannedNames = [
   'loading',
@@ -150,9 +151,20 @@ async function getBlogAmp(url: string, outputPath: string): Promise<string> {
     _workaroundHTML = _workaroundHTML.replace('{{nav-links}}', navLinksHTML.join(''))
   }
 
+  const langMenuLinks = $('#language-select nav').html()
+  if (langMenuLinks) {
+    _workaroundHTML = _workaroundHTML.replace('{{lang-links}}', langMenuLinks || '')
+  }
+
+  // nav menu
   const workaroundWrapper = $(`<label for="workaround-overlay-menu__checkbox" id="workaround-overlay-menu__label"></label>`);
   $('.menu-button.w-nav-button').wrap(workaroundWrapper)
   $('#Navigation').append(_workaroundHTML)
+
+  // language dropdown
+  const language = $('#language-select')
+  language.wrap($(`<label for="workaround__checkbox" id="workaround__label"></label>`))
+  $('<input type="checkbox" id="workaround__checkbox" style="display: none;">').insertBefore('#language-select nav')
 
   $('html').attr('⚡', '')
   $('script').remove()
@@ -171,6 +183,9 @@ async function getBlogAmp(url: string, outputPath: string): Promise<string> {
     }
   })
 
+  convertToAmpImg($, '#language-select .dropdown-toggle img', 23, 23)
+  convertToAmpImg($, '#language-select nav img', 16, 16)
+  convertToAmpImg($, '.lang-links-wrapper img', 16, 16)
   convertToAmpImg($, '.connect-icon img', 18, 18)
   convertToAmpImg($, '.mini-icon-grey', 14, 14)
   convertToAmpImg($, '.banner-sidebar.w-inline-block img', 300, 400)
