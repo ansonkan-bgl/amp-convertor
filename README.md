@@ -17,14 +17,15 @@ ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/ ./build/amp
 
 // convert Cloudbet home page
 ts-node amp-converter-parser.ts https://www.cloudbet-weglot.com/ ./build/amp/cb.amp.html 1
+ts-node amp-converter-parser.ts https://cloudbet-page.webflow.io/lp-dash-sportsbook-casino ./build/amp/dash.amp.html 2
 
 // convert single post page
 ts-node amp-converter-parser.ts https://www.cloudbet.com/en/blog/posts/cloudbet-always-growing ./build/amp/post.amp.html
-ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/posts/ncaa-buzzer-beater-heartbreak-well-help-ease-the-pain ./build/amp/post.amp.html
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/posts/ncaa-buzzer-beater-heartbreak-well-help-ease-the-pain ./build/amp/post-2.amp.html
 
 // convert categories - previews page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/previews?eda8cc54_page=2 ./build/amp/categories.amp.html
-ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/in-the-cloud ./build/amp/categories.amp.html
+ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/categories/in-the-cloud ./build/amp/categories-2.amp.html
 
 // convert tags - bitcoin page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/tags/bitcoin?5fe33004_page=2 ./build/amp/tags.amp.html

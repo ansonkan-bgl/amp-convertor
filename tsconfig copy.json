@@ -1,9 +1,8 @@
 {
-  // "extends": "@bitgaming/reinv-js-config/serverless/.tsconfig.json",
+  "extends": "@bitgaming/reinv-js-config/serverless/.tsconfig.json",
   "exclude": [
     "serverless.ts",
-    "node_modules",
-    ".npm"
+    "node_modules"
   ],
   "compilerOptions": {
     "esModuleInterop": true,
