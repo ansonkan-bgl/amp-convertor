@@ -4,8 +4,52 @@ import axios from 'axios';
 import parse from 'url-parse';
 import cheerio, { CheerioAPI, Element, Node } from 'cheerio'
 
-type ReplaceImgInput = {
+export const img = [
+  // the global on the language dropdown
+  { query: '#language-select .dropdown-toggle > img', width: 23, height: 23 },
+  // the country flags inside of the language dropdown menu
+  { query: '.language-dropdown a img', width: 16, height: 16 },
+  // background image of the Hero section
+  { query: 'div.hero-bg img', width: 3, height: 2, unknownDimensions: true, noDefaultClass: true },
+  // in the Features section which is right below the sub hero section, there is a svg on the left of each sub point, this is for them
+  { query: '.feature-icon', width: 58, height: 58 },
+  // the dealer
+  { query: '#feature-img-live-dealer img', width: 120.203, height: 253.125 },
+  // this is for the svgs in the Sign-up section which is right below the Features section
+  { query: '.account-icons', width: 100, height: 100 },
+  // in the Get Started section which is below the Offer section, this is for all of the icons inside
+  { query: '.image-get-started', width: 48, height: 48 },
+  // the footer logo
+  { query: '.footer-logo', width: 178, height: 35.94, unknownDimensions: true, noDefaultClass: true },
+  // arrow icons for the footer sections
+  { query: '.arrow', width: 22, height: 37 },
+  // social icons in the footer
+  { query: '.social-symbol', width: 18, height: 18 },
+  // for all the crypto currency icons in the footer
+  { query: '.footer-icon', width: 48, height: 48 },
+  // replace the remaining images, including the Hero background image
+  { query: 'img', width: 300, height: 200, unknownDimensions: true },
+]
+
+export const video = [
+  // background videos in the Sub Hero section which is the section below the Hero section
+  { query: '.sub-hero-grid video', width: 1, height: 1 },
+  // background video in the Summary section which is the last section before the footer
+  { query: '.summary video', width: 1, height: 4 }
+]
+
+type Attribute = {
+  name: string,
+  value: string
+}
+
+type ReplaceInput = {
   query: string;
+  width?: number;
+  height?: number;
+}
+
+type ReplaceImgInput = ReplaceInput & {
   width: number;
   height: number;
   heights?: string;
@@ -13,26 +57,18 @@ type ReplaceImgInput = {
   noDefaultClass?: boolean;
 }
 
-type ReplaceIFrameInput = {
-  query: string;
-  width?: number;
-  height?: number;
-}
+type ReplaceIFrameInput = ReplaceInput
 
-type ReplaceVideoInput = {
-  query: string;
-  width?: number;
-  height?: number;
-}
+type ReplaceVideoInput = ReplaceInput
 
 class AmpHelper {
-  $: CheerioAPI;
-  ampImgAttrBannedNames = [
+  protected $: CheerioAPI;
+  protected ampImgAttrBannedNames = [
     'loading',
     'width',
     'height'
   ];
-  ampVideoAttrBannedNames = [
+  protected ampVideoAttrBannedNames = [
     'playsinline'
   ];
 
@@ -40,23 +76,35 @@ class AmpHelper {
     this.$ = cheerioAPI
   }
 
-  cleanUp() {
-    this.$('html').attr('⚡', '')
+  cleanUp(): void {
+    const html = this.$('html')
+    html.attr('⚡', '')
     this.$('script').remove()
     this.$('style').remove()
     this.$('link[rel=stylesheet]').remove()
     this.$('link[rel=amphtml]').remove()
+
+    const htmlAttrs = this.getAllAttributes(html[0])
+    if (htmlAttrs) {
+      const webflowAttrs = htmlAttrs
+        .map((a: Attribute) => a.name)
+        .filter((name: string) => name.toLowerCase().includes('data-wf-'))
+      html.removeAttr(webflowAttrs.join(' '))
+    }
   }
 
-  private getAllAttributes(node: any): Array<any> {
-    return node.attributes || (node.attribs ? Object.keys(node.attribs).map(
-      name => ({ name, value: node.attribs[name] })
+  private getAllAttributes(node: any): Array<Attribute> {
+    if (!node) return []
+    return node.attributes || (node.attribs ? Object.entries(node.attribs).map(
+      ([name, value]) => ({ name, value })
     ) : []);
   }
 
   replaceImg(input: ReplaceImgInput | Array<ReplaceImgInput>) {
     if (Array.isArray(input)) {
-      input.forEach(i => this.replaceImgHelper(i))
+      for (const i of input) {
+        this.replaceImgHelper(i)
+      }
     } else {
       this.replaceImgHelper(input)
     }
@@ -78,7 +126,13 @@ class AmpHelper {
     const nodes = cheerio.toArray()
     if (!nodes || nodes.length === 0) return
 
-    const ampImg = this.$(`<amp-img ${unknownDimensions ? 'layout="responsive"' : ''} height="${height}" width="${width}" ${heights ? heights : ''}></amp-img>`)
+    const ampImg = this.$(`<amp-img height="${height}" width="${width}"></amp-img>`)
+    if (unknownDimensions) {
+      ampImg.attr('layout', 'responsive')
+    }
+    if (heights) {
+      ampImg.attr('heights', heights)
+    }
     if (!noDefaultClass) {
       ampImg.addClass('main-image')
     }
@@ -200,6 +254,15 @@ class AmpHelper {
     language.wrap(this.$(`<label for="workaround__checkbox" id="workaround__label"></label>`))
     this.$('<input type="checkbox" id="workaround__checkbox" style="display: none;">').insertBefore('#language-select nav')
   }
+
+  fixAlternateLangLinks(): void {
+    this.$('link[rel=alternate]')
+      .toArray()
+      .forEach((n: Element) => {
+        const link = this.$(n)
+        link.attr('href', `${link.attr('href')}amp/`)
+      })
+  }
 }
 
 const blogCSS: string = fs.readFileSync(path.join(__dirname, 'blog.min.css'), { encoding: 'utf8', flag: 'r' });
@@ -283,13 +346,14 @@ async function getBlogAmp(url: string, outputPath: string): Promise<string> {
     { query: '.close-button.w-inline-block img', width: 12, height: 12 },
     { query: '.nav-arrow', width: 16, height: 16 },
     { query: '.post-popup-close img', width: 12, height: 12 },
-    { query: '.post .post-rich-text img', width: 300, height: 200 },
+    { query: '.post .post-rich-text img', width: 300, height: 200, unknownDimensions: true },
     { query: 'img', width: 300, height: 200, unknownDimensions: true }
   ])
 
-  ampHelper.replaceIFrame({
-    query: 'iframe'
-  })
+  ampHelper.replaceIFrame([
+    { query: '.w-richtext-figure-type-video iframe', width: 403.19, height: 226.8 },
+    { query: 'iframe' }
+  ])
 
   html = $.html()
 
@@ -324,45 +388,44 @@ async function getCbHomeAmp(url: string, outputPath: string): Promise<string> {
     throw error
   }
 
-  const $ = cheerio.load(html);
+  const $ = cheerio.load(html)
   const ampHelper = new AmpHelper($)
 
-  ampHelper.cleanUp();
+  ampHelper.cleanUp()
   $('head')
     .append($('<link rel="canonical" href="https://www.cloudbet.com/">'))
-    .append($(`<style amp-custom>${cbHomeCSS}</style>${ampHead}`));
+    .append($(`<style amp-custom>${cbHomeCSS}</style>${ampHead}`))
   ampHelper.fixFormAttributes();
-  // ampHelper.addLanguageDropdownWorkaround();
+  ampHelper.addLanguageDropdownWorkaround();
+  ampHelper.fixAlternateLangLinks();
 
-  // ampHelper.replaceImg([
-  //   { query: '.footer-logo', width: 178, height: 35.94, unknownDimensions: true, noDefaultClass: true },
-  //   { query: '.sub-hero-button img', width: 16, height: 16 },
-  //   { query: '.div-block-8 img', width: 58, height: 58 },
-  //   { query: '.account-icons', width: 112, height: 112 },
-  //   { query: '.image-5', width: 506, height: 204, unknownDimensions: true, noDefaultClass: true },
-  //   { query: '.image-get-started', width: 48, height: 48 },
-  //   { query: '.footer-icon', width: 48, height: 48 },
-  //   { query: '.buy-btc', width: 300, height: 300 },
-  //   { query: '.html-embed-4 img', width: 1, height: 1, unknownDimensions: true, noDefaultClass: true },
-  //   { query: '.image-9', width: 300, height: 300 },
-  //   { query: '.image-10', width: 300, height: 300 },
-  //   { query: '.image-15', width: 3, height: 2, unknownDimensions: true, noDefaultClass: true },
-  //   { query: '.image-11', width: 90, height: 80.844 },
-  //   { query: '.image-12', width: 150, height: 95.313 },
-  //   { query: '.live-dealer', width: 120.203, height: 253.125 },
-  //   { query: '.logo', width: 100, height: 61 },
-  //   { query: '.image-13', width: 16, height: 16 },
-  //   { query: '.image-14', width: 23, height: 23 },
-  //   { query: '.language-dropdown a img', width: 16, height: 16 },
-  //   { query: '.arrow', width: 22, height: 37 },
-  //   { query: '.social-symbol', width: 18, height: 18 },
-  //   { query: 'img', width: 300, height: 200, unknownDimensions: true }
-  // ])
+  ampHelper.replaceImg([
+    // the logo on the Navigation bar
+    { query: '.logo', width: 100, height: 61 },
+    // the arrow icons inside of the sub hero section which have 3 videos playing in the background
+    { query: '.sub-hero-button img', width: 16, height: 16 },
+    // the Buy BTC image in the first point of the Feature section
+    { query: '#feature-img-buy-crypto img', width: 300, height: 300, unknownDimensions: true, noDefaultClass: true },
+    // in the Second point of the Feature section, the phone background
+    { query: '#feature-img-smart-phone img', width: 1, height: 1, unknownDimensions: true, noDefaultClass: true },
+    // the dice
+    { query: '#feature-img-dice', width: 90, height: 80.844 },
+    // the chip
+    { query: '#feature-img-chip', width: 150, height: 95.313 },
+    // the main image in the third point of the Feature section
+    { query: '#feature-img-sportsbook img', width: 300, height: 300, unknownDimensions: true, noDefaultClass: true },
+    // the main image in the forth point of the Feature section
+    { query: '#feature-img-esports img', width: 300, height: 300, unknownDimensions: true, noDefaultClass: true },
+    // in the Offer section which is below the Sign-up section, there are 2 characters images, this is for them
+    { query: '.offer-main-img img', width: 506, height: 204, unknownDimensions: true, noDefaultClass: true },
+    // for the background image behind those 2 characters
+    { query: '.offer-bg img', width: 3, height: 2, unknownDimensions: true, noDefaultClass: true },
+    ...img
+  ])
 
-  // ampHelper.replaceVideo([
-  //   { query: '.sub-hero-content-wrap video', width: 1, height: 1 },
-  //   { query: '.summary video', width: 1, height: 4 }
-  // ])
+  ampHelper.replaceVideo([
+    ...video
+  ])
 
   // replace anhor relative href to prevent wrong href, e.g. auth/sign-up -> https://stg.cloudbet.com/en/amp/auth/sign-in
   const anchors = $('a')
@@ -375,7 +438,6 @@ async function getCbHomeAmp(url: string, outputPath: string): Promise<string> {
     })
     .forEach(a => {
       const base = $(a)
-      console.log(base.attr('href'), `https://stg.cloudbet.com/${base.attr('href')}`)
       base.attr('href', `https://stg.cloudbet.com/${base.attr('href')}`)
     })
 
@@ -423,30 +485,27 @@ async function getCbDashHomeAmp(url: string, outputPath: string): Promise<string
   ampHelper.addLanguageDropdownWorkaround()
 
   ampHelper.replaceImg([
-    { query: '#language-select .dropdown-toggle > img', width: 23, height: 23 },
-    { query: '.footer-logo', width: 178, height: 30, unknownDimensions: true, noDefaultClass: true },
-    { query: '.div-block-8 img', width: 58, height: 58 },
-    { query: '.account-icons-2', width: 100, height: 100 },
-    { query: '.image-get-started', width: 48, height: 48 },
-    { query: '.footer-icon', width: 48, height: 48 },
-    { query: '.features > .container > div:nth-child(1) > img', width: 300, height: 300, unknownDimensions: true },
-    { query: '.features > .container > div:nth-child(2) > img', width: 288, height: 300.67 },
-    { query: '.features > .container > div:nth-child(3) .image-9', width: 300, height: 300 },
-    { query: '.features > .container > div:nth-child(4) .html-embed-4 img', width: 1, height: 1, unknownDimensions: true, noDefaultClass: true },
-    { query: '.features > .container > div:nth-child(4) .live-dealer', width: 120.203, height: 253.125 },
-    { query: '.features > .container > div:nth-child(4) .image-11', width: 77, height: 74 },
-    { query: '.features > .container > div:nth-child(4) .image-12', width: 128, height: 85 },
-    { query: '.offer .offer-image:nth-child(1)', width: 309, height: 138, unknownDimensions: true },
-    { query: '.offer .offer-image:nth-child(2)', width: 252, height: 200, unknownDimensions: true },
+    // the logo on the Navigation bar
     { query: '.logo', width: 198, height: 26 },
-    { query: '.language-dropdown a img', width: 16, height: 16 },
-    { query: '.arrow', width: 22, height: 37 },
-    { query: 'img', width: 300, height: 200, unknownDimensions: true },
+    // the Buy BTC image in the first point of the Feature section
+    { query: '#feature-img-buy-crypto', width: 300, height: 300, unknownDimensions: true, noDefaultClass: true },
+    // the main image in the second point of the Feature section
+    { query: '#feature-img-sportsbook', width: 288, height: 300.67, unknownDimensions: true, noDefaultClass: true },
+    // the main image in the third point of the Feature section
+    { query: '#feature-img-esports img', width: 300, height: 300, unknownDimensions: true, noDefaultClass: true },
+    // the phone background in the forth point of the Feature section
+    { query: '#feature-img-smart-phone img', width: 1, height: 1, unknownDimensions: true, noDefaultClass: true },
+    // the dice
+    { query: '#feature-img-dice', width: 77, height: 74 },
+    // the coin
+    { query: '#feature-img-chip', width: 128, height: 85 },
+    // the main images in the cards under the Offer section
+    { query: '.offer-main-img', width: 309, height: 138, unknownDimensions: true },
+    ...img
   ])
 
   ampHelper.replaceVideo([
-    { query: '.subhero video', width: 1, height: 1 },
-    { query: '.summary video', width: 1, height: 4 }
+    ...video
   ])
 
   // replace anhor relative href to prevent wrong href, e.g. auth/sign-up -> https://stg.cloudbet.com/en/amp/auth/sign-in
@@ -486,7 +545,7 @@ const args = process.argv.slice(2)
 if (args[2] === '1') {
   // cloudbet home page 
   getCbHomeAmp(args[0], args[1])
-} if (args[2] === '2') {
+} else if (args[2] === '2') {
   // cloudbet dash home page 
   getCbDashHomeAmp(args[0], args[1])
 } else {

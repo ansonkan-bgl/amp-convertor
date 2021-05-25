@@ -429,6 +429,16 @@ html input[type=button] {
     max-width: 60%
 }
 
+.w-richtext figure.w-richtext-figure-type-video,
+.w-richtext figure.w-richtext-figure-type-image {
+    max-width: unset;
+    width: 100%;
+}
+
+.w-richtext figure.w-richtext-figure-type-image>div {
+    width: 100%;
+}
+
 .w-richtext figure>div:before {
     cursor: default
 }
@@ -3632,6 +3642,10 @@ ol {
     }
 }
 
-.amp-active {
+amp-img .amp-active {
+    display: none;
+}
+
+.section.hide {
     display: none;
 }

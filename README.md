@@ -14,9 +14,12 @@ server
 
 // convert blog home page
 ts-node amp-converter-parser.ts https://cloudbet-blog-en.webflow.io/ ./build/amp/home.amp.html
+ts-node amp-converter-parser.ts https://www.cloudbet.com/de/blog/ ./build/amp/home.amp.html
 
 // convert Cloudbet home page
 ts-node amp-converter-parser.ts https://www.cloudbet-weglot.com/ ./build/amp/cb.amp.html 1
+ts-node amp-converter-parser.ts https://stg.cloudbet.com/en/ ./build/amp/cb.amp.html 1
+
 ts-node amp-converter-parser.ts https://cloudbet-page.webflow.io/lp-dash-sportsbook-casino ./build/amp/dash.amp.html 2
 
 // convert single post page

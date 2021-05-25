@@ -1064,6 +1064,7 @@ h4 {
 }
 
 .html-embed-2 {
+    width: 100%;
     max-width: 100%;
     margin-right: auto;
     margin-left: auto
@@ -1217,7 +1218,7 @@ h4 {
     right: 0;
     bottom: 0;
     width: 100%;
-    height: auto;
+    height: 60%;
     -o-object-fit: fill;
     object-fit: fill
 }
@@ -2177,10 +2178,33 @@ amp-img.image-5>img {
     }
 }
 
-.amp-active {
+amp-img .amp-active {
     display: none;
 }
 
 amp-img.hero-bg-dash>img {
     object-fit: cover;
+}
+
+amp-img#feature-img-sportsbook,
+#feature-img-esports amp-img {
+    margin: auto;
+    max-width: 500px;
+}
+
+.offer-main-img {
+    max-width: 300px;
+}
+
+@media screen and (min-width:992px) {
+    #feature-img-sportsbook {
+        -ms-grid-column-span: 0;
+        grid-column-end: 2;
+        -ms-grid-column: 2;
+        grid-column-start: 2;
+        -ms-grid-row-span: 1;
+        grid-row-end: 2;
+        -ms-grid-row: 1;
+        grid-row-start: 1;
+    }
 }
