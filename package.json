@@ -1,7 +1,7 @@
 {
   "scripts": {
     "tsc": "tsc",
-    "minify": "yarn postcss all.css -o blog.min.css && yarn postcss cb-home.css -o cb-home.min.css && yarn postcss dash-purged.css -o dash.min.css"
+    "minify": "yarn postcss all.css -o blog.min.css && yarn postcss cb-home-purged.css -o cb-home.min.css && yarn postcss dash-purged.css -o dash.min.css"
   },
   "dependencies": {
     "axios": "^0.21.1",
